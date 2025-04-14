@@ -1,0 +1,19 @@
+﻿# Ignora todos os arquivos .log e .txt
+*.log
+*.tmp
+*.cache
+
+# Arquivos de build e depend�ncias
+/bin/
+/obj/
+
+# Ignora uma pasta e tudo dentro dela
+/Estudos/
+/Properties/
+/Migrations/
+
+# Ignorar o arquivo de conex�o com o banco
+appsettings.json
+
+RedaTech.csproj.user
+appsettings.Development.json

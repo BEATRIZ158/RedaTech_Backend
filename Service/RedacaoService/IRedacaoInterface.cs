@@ -1,0 +1,14 @@
+﻿using Redatech.Dto;
+using Redatech.Models;
+
+namespace Redatech.Service.RedacaoService
+{
+    public interface IRedacaoInterface
+    {
+        Task<ServiceResponse<List<RedacaoDto>>> GetRedacoes();
+        Task<ServiceResponse<List<RedacaoDto>>> CreateRedacao(RedacaoDto novaRedacaoDto);
+        Task<ServiceResponse<RedacaoDto>> GetRedacaoById(int id);
+        Task<ServiceResponse<List<RedacaoDto>>> UpdateRedacao(RedacaoDto editadaRedacaoDto);
+        Task<ServiceResponse<List<RedacaoDto>>> DeleteRedacao(int id);
+    }
+}

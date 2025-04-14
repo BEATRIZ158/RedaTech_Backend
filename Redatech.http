@@ -1,0 +1,6 @@
+@Redatech_HostAddress = http://localhost:5286
+
+GET {{Redatech_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
