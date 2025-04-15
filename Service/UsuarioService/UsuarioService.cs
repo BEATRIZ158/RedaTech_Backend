@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Redatech.DataContext;
 using Redatech.Dto;
+using Redatech.Estaticos.Login;
 using Redatech.Models;
 
 namespace Redatech.Service.UsuarioService
@@ -40,6 +41,8 @@ namespace Redatech.Service.UsuarioService
                 // Mapeia o DTO para a entidade que será salva no banco
                 UsuarioModel novoUsuario = _mapper.Map<UsuarioModel>(novoUsuarioDto);
                 novoUsuario.Status = true;
+
+                novoUsuario.SenhaHash = CriptografiaHash.GerarHash(novoUsuarioDto.SenhaHash);
 
                 // Adiciona ao banco de dados
                 _context.Usuarios.Add(novoUsuario);
@@ -234,6 +237,37 @@ namespace Redatech.Service.UsuarioService
             }
 
             return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<string>> LoginAsync(LoginDto loginDto)
+        {
+            var response = new ServiceResponse<string>();
+
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+
+            if (usuario == null)
+            {
+                response.Sucesso = false;
+                response.Mensagem = "Usuário não encontrado.";
+                return response;
+            }
+
+            // Gerar o hash da senha digitada e comparar
+            var senhaDigitadaHash = CriptografiaHash.GerarHash(loginDto.Senha);
+
+            if (usuario.SenhaHash != senhaDigitadaHash)
+            {
+                response.Sucesso = false;
+                response.Mensagem = "Senha incorreta.";
+                return response;
+            }
+
+            response.Sucesso = true;
+            response.Mensagem = "Login realizado com sucesso!";
+            response.Dados = "Usuário autenticado."; // Aqui você pode futuramente retornar um token, id, ou outro dado útil
+
+            return response;
         }
     }
 }

@@ -18,5 +18,7 @@ namespace Redatech.Models
         public DateTime DataDeCriacao { get; set; } = DateTime.Now.ToLocalTime(); //Data da criação
         public TipoUsuario TipoUsuario { get; set; }
 
+        //Senha criptografada
+        public string SenhaHash { get; set; }
     }
 }

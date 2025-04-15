@@ -60,5 +60,15 @@ namespace Redatech.Controllers
             ServiceResponse<List<UsuarioDto>> serviceResponse = await _usuarioInterface.DeleteUsuario(id);
             return Ok(serviceResponse);
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<ServiceResponse<string>>> Login([FromBody] LoginDto loginDto)
+        {
+            var resposta = await _usuarioInterface.LoginAsync(loginDto);
+            if (!resposta.Sucesso)
+                return BadRequest(resposta);
+
+            return Ok(resposta);
+        }
     }
 }

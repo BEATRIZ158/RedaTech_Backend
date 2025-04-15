@@ -11,7 +11,7 @@ namespace Redatech.Dto
         public string Cpf { get; set; } //CPF
         public DateTime DataNascimento { get; set; }
         public TipoUsuario TipoUsuario { get; set; }
+        public string SenhaHash { get; set; }
         public bool Status { get; set; }
-
     }
 }
