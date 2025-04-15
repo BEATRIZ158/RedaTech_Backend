@@ -219,6 +219,8 @@ namespace Redatech.Service.UsuarioService
                 // Mapeia os dados editados do DTO para um objeto do tipo UsuarioModel
                 UsuarioModel usuarioAtualizado = _mapper.Map<UsuarioModel>(editadoUsuarioDto);
 
+                usuarioAtualizado.SenhaHash = CriptografiaHash.GerarHash(editadoUsuarioDto.SenhaHash);
+
                 // Atualiza o objeto no contexto
                 _context.Usuarios.Update(usuarioAtualizado);
 
@@ -239,33 +241,31 @@ namespace Redatech.Service.UsuarioService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<string>> LoginAsync(LoginDto loginDto)
+        public async Task<ServiceResponse<UsuarioLogadoDto>> Login(LoginDto loginDto)
         {
-            var response = new ServiceResponse<string>();
+            var response = new ServiceResponse<UsuarioLogadoDto>();
 
             var usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
 
-            if (usuario == null)
+            if (usuario == null || !CriptografiaHash.VerificarSenha(loginDto.Senha, usuario.SenhaHash))
             {
                 response.Sucesso = false;
-                response.Mensagem = "Usuário não encontrado.";
+                response.Mensagem = "Usuário ou senha inválidos!";
                 return response;
             }
 
-            // Gerar o hash da senha digitada e comparar
-            var senhaDigitadaHash = CriptografiaHash.GerarHash(loginDto.Senha);
-
-            if (usuario.SenhaHash != senhaDigitadaHash)
+            var usuarioLogado = new UsuarioLogadoDto
             {
-                response.Sucesso = false;
-                response.Mensagem = "Senha incorreta.";
-                return response;
-            }
+                Id = usuario.Id,
+                Nome = usuario.Nome,
+                Email = usuario.Email,
+                TipoUsuario = usuario.TipoUsuario
+            };
 
             response.Sucesso = true;
             response.Mensagem = "Login realizado com sucesso!";
-            response.Dados = "Usuário autenticado."; // Aqui você pode futuramente retornar um token, id, ou outro dado útil
+            response.Dados = usuarioLogado;
 
             return response;
         }

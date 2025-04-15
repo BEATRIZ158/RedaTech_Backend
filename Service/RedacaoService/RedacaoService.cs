@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Redatech.DataContext;
 using Redatech.Dto;
@@ -20,36 +21,32 @@ namespace Redatech.Service.RedacaoService
 
         public async Task<ServiceResponse<List<RedacaoDto>>> CreateRedacao(RedacaoDto novaRedacaoDto)
         {
-            ServiceResponse<List<RedacaoDto>> serviceResponse = new ServiceResponse<List<RedacaoDto>>();
+            var response = new ServiceResponse<List<RedacaoDto>>();
 
             try
             {
                 if (novaRedacaoDto == null)
                 {
-                    serviceResponse.Dados = null;
-                    serviceResponse.Mensagem = "Informar dados!";
-                    serviceResponse.Sucesso = false;
-
-                    return serviceResponse;
+                    response.Sucesso = false;
+                    response.Mensagem = "Dados inválidos.";
+                    return response;
                 }
 
-                RedacaoModel novaRedacao = _mapper.Map<RedacaoModel>(novaRedacaoDto);
-
-                _context.Redacoes.Add(novaRedacao);
+                RedacaoModel redacao = _mapper.Map<RedacaoModel>(novaRedacaoDto);
+                _context.Redacoes.Add(redacao);
                 await _context.SaveChangesAsync();
 
-                List<RedacaoModel> redacoes = _context.Redacoes.ToList();
-                serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(redacoes);
-
-                serviceResponse.Mensagem = "Redação criada com sucesso!";
-                serviceResponse.Sucesso = true;
+                var lista = _context.Redacoes.ToList();
+                response.Dados = _mapper.Map<List<RedacaoDto>>(lista);
+                response.Mensagem = "Redação criada com sucesso!";
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
-                serviceResponse.Sucesso = false;
+                response.Sucesso = false;
+                response.Mensagem = ex.Message;
             }
-            return serviceResponse;
+
+            return response;
         }
 
         public async Task<ServiceResponse<List<RedacaoDto>>> DeleteRedacao(int id)
@@ -172,6 +169,45 @@ namespace Redatech.Service.RedacaoService
 
             return serviceResponse;
         }
+
+        public async Task<ServiceResponse<string>> UploadArquivoRedacao(IFormFile arquivo)
+        {
+            var response = new ServiceResponse<string>();
+
+            try
+            {
+                if (arquivo == null || arquivo.Length == 0)
+                {
+                    response.Sucesso = false;
+                    response.Mensagem = "Arquivo inválido!";
+                    return response;
+                }
+
+                var nomeArquivo = Guid.NewGuid().ToString() + Path.GetExtension(arquivo.FileName);
+                var caminhoPasta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "redacoes");
+
+                if (!Directory.Exists(caminhoPasta))
+                    Directory.CreateDirectory(caminhoPasta);
+
+                var caminhoCompleto = Path.Combine(caminhoPasta, nomeArquivo);
+
+                using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+                {
+                    await arquivo.CopyToAsync(stream);
+                }
+
+                string caminhoBanco = Path.Combine("redacoes", nomeArquivo).Replace("\\", "/");
+                response.Dados = caminhoBanco;
+                response.Mensagem = "Arquivo enviado com sucesso!";
+                response.Sucesso = true;
+            }
+            catch (Exception ex)
+            {
+                response.Sucesso = false;
+                response.Mensagem = $"Erro ao fazer upload: {ex.Message}";
+            }
+
+            return response;
+        }
     }
 }
-

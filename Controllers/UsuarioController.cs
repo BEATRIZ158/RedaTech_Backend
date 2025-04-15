@@ -17,6 +17,11 @@ namespace Redatech.Controllers
             _usuarioInterface = usuarioInterface;
         }
 
+        /// <summary>
+        /// Retorna a lista de usuários
+        /// </summary>
+        /// <param name="">Não precisa passar nenhum valor</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> GetUsuarios()
         {
@@ -24,6 +29,11 @@ namespace Redatech.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Buscar um usuário pelo seu Id
+        /// </summary>
+        /// <param name="id">Id do usuário que está sendo buscado</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<ServiceResponse<UsuarioDto>>> GetUsuarioById(int id)
         {
@@ -34,12 +44,22 @@ namespace Redatech.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Criação de usuário
+        /// </summary>
+        /// <param name="novoUsuario">Dados do novo usuário</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> CreateUsuario(UsuarioDto novoUsuario)
         {
             return Ok(await _usuarioInterface.CreateUsuario(novoUsuario));
         }
 
+        /// <summary>
+        /// Atualizar os dados do usuário
+        /// </summary>
+        /// <param name="editadoUsuario">Dados do usuário atualizados</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPut]
         public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> UpdateUsuario(UsuarioDto editadoUsuario)
         {
@@ -47,6 +67,11 @@ namespace Redatech.Controllers
             return Ok(serviceResponse);
         }
 
+        /// <summary>
+        /// Inativar ou Ativar usuário
+        /// </summary>
+        /// <param name="id">Id do Usuário</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPut("{id}")]
         public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> InativaUsuario(int id)
         {
@@ -54,6 +79,11 @@ namespace Redatech.Controllers
             return Ok(serviceResponse);
         }
 
+        /// <summary>
+        /// Deletar usuário
+        /// </summary>
+        /// <param name="id">Id do Usuário</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> DeleteUsuario(int id)
         {
@@ -61,10 +91,15 @@ namespace Redatech.Controllers
             return Ok(serviceResponse);
         }
 
+        /// <summary>
+        /// Faz login do usuário com email e senha.
+        /// </summary>
+        /// <param name="loginDto">Dados de login do usuário.</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPost("login")]
-        public async Task<ActionResult<ServiceResponse<string>>> Login([FromBody] LoginDto loginDto)
+        public async Task<ActionResult<ServiceResponse<UsuarioLogadoDto>>> Login([FromBody] LoginDto loginDto)
         {
-            var resposta = await _usuarioInterface.LoginAsync(loginDto);
+            var resposta = await _usuarioInterface.Login(loginDto);
             if (!resposta.Sucesso)
                 return BadRequest(resposta);
 

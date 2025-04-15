@@ -51,5 +51,23 @@ namespace Redatech.Controllers
             ServiceResponse<List<RedacaoDto>> serviceResponse = await _redacaoInterface.DeleteRedacao(id);
             return Ok(serviceResponse);
         }
+
+        [HttpPost("enviar-redacao")]
+        public async Task<IActionResult> EnviarRedacao([FromForm] RedacaoDto redacaoDto, IFormFile arquivo)
+        {
+            var uploadResponse = await _redacaoInterface.UploadArquivoRedacao(arquivo);
+
+            if (!uploadResponse.Sucesso)
+                return BadRequest(uploadResponse.Mensagem);
+
+            redacaoDto.CaminhoArquivo = uploadResponse.Dados;
+
+            var createResponse = await _redacaoInterface.CreateRedacao(redacaoDto);
+
+            if (!createResponse.Sucesso)
+                return BadRequest(createResponse.Mensagem);
+
+            return Ok(createResponse);
+        }
     }
 }

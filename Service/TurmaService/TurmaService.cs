@@ -326,6 +326,15 @@ namespace Redatech.Service.TurmaService
                     .Where(u => alunosIds.Contains(u.Id))
                     .ToListAsync();
 
+                var turma = await _context.Turmas.FirstOrDefaultAsync(x => x.Id == turmaId);
+
+                if (turma == null)
+                {
+                    response.Sucesso = false;
+                    response.Mensagem = "Turma não encontrada.";
+                    return response;
+                }
+
                 response.Dados = _mapper.Map<List<UsuarioDto>>(alunos);
                 response.Sucesso = true;
                 response.Mensagem = "Lista de alunos obtida com sucesso.";

@@ -1,4 +1,5 @@
-﻿using Redatech.Dto;
+﻿using Microsoft.AspNetCore.Mvc;
+using Redatech.Dto;
 using Redatech.Models;
 
 namespace Redatech.Service.RedacaoService
@@ -10,5 +11,6 @@ namespace Redatech.Service.RedacaoService
         Task<ServiceResponse<RedacaoDto>> GetRedacaoById(int id);
         Task<ServiceResponse<List<RedacaoDto>>> UpdateRedacao(RedacaoDto editadaRedacaoDto);
         Task<ServiceResponse<List<RedacaoDto>>> DeleteRedacao(int id);
+        Task<ServiceResponse<string>> UploadArquivoRedacao(IFormFile arquivo);
     }
 }
