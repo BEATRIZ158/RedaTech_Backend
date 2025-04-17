@@ -18,6 +18,11 @@ namespace Redatech.Controllers
             _turmaInterface = turmaInterface;
         }
 
+        /// <summary>
+        /// Listando todas as turma
+        /// </summary>
+        /// <param name="">Nenhum parametro é necessário</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> GetUsuarios()
         {
@@ -25,6 +30,11 @@ namespace Redatech.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Listando uma turma pelo id
+        /// </summary>
+        /// <param name="id">Passa o id da turma a ser buscada</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<ServiceResponse<TurmaDto>>> GetTurmaById(int id)
         {
@@ -32,12 +42,22 @@ namespace Redatech.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Criando uma nova turma
+        /// </summary>
+        /// <param name="novaTurmaDto">Passa os dados da nova turma</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> CreateTurma(TurmaDto novaTurmaDto)
         {
             return Ok(await _turmaInterface.CreateTurma(novaTurmaDto));
         }
 
+        /// <summary>
+        /// Editando uma turma
+        /// </summary>
+        /// <param name="editadoTurmaDto">Passa os dados atualizados da turma</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPut]
         public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> UpdateTurma(TurmaDto editadoTurmaDto)
         {
@@ -45,6 +65,11 @@ namespace Redatech.Controllers
             return Ok(serviceResponse);
         }
 
+        /// <summary>
+        /// Inativa/Ativa uma turma
+        /// </summary>
+        /// <param name="id">Passa o id da turma a ser ativada/inativada</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPut("{id}")]
         public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> InativaTurma(int id)
         {
@@ -52,6 +77,11 @@ namespace Redatech.Controllers
             return Ok(serviceResponse);
         }
 
+        /// <summary>
+        /// Deleta a turma
+        /// </summary>
+        /// <param name="id">Passa o id da turma.</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> DeleteTurma(int id)
         {
@@ -59,6 +89,12 @@ namespace Redatech.Controllers
             return Ok(serviceResponse);
         }
 
+        /// <summary>
+        /// Remover aluno da turma
+        /// </summary>
+        /// <param name="turmaId">Passa o id da turma.</param>
+        /// <param name="alunoId">Passa o id do aluno.</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpDelete("remover-aluno")]
         public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> RemoverUsuarioDaTurma(
             [FromQuery] int turmaId,
@@ -68,6 +104,12 @@ namespace Redatech.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Listar alunos da turma
+        /// </summary>
+        /// <param name="turmaId">Passa o id da turma.</param>
+        /// <param name="alunoId">Passa o id do aluno.</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPost("adicionar-aluno")]
         public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> AdicionarAlunoNaTurma(
             [FromQuery] int turmaId,
@@ -77,11 +119,32 @@ namespace Redatech.Controllers
             return Ok(resposta);
         }
 
+        /// <summary>
+        /// Listar alunos da turma
+        /// </summary>
+        /// <param name="turmaId">Passa o id da turma.</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet("ListarAlunosDaTurma/{turmaId}")]
         public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> ListarAlunosDaTurma(int turmaId)
         {
             var response = await _turmaInterface.ListarAlunosDaTurma(turmaId);
             return Ok(response);
+        }
+
+        /// <summary>
+        /// Buscar turma por caracter
+        /// </summary>
+        /// <param name="nomeTurmaParcial">Nome parcial da turma.</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
+        [HttpGet("buscar-por-nome/{nomeTurmaParcial}")]
+        public async Task<IActionResult> BuscarTurmasPorNome(string nomeTurmaParcial)
+        {
+            var resposta = await _turmaInterface.GetTurmasByName(nomeTurmaParcial);
+
+            if (!resposta.Sucesso)
+                return BadRequest(resposta.Mensagem);
+
+            return Ok(resposta);
         }
     }
 }

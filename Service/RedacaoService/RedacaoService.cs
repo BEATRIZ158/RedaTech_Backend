@@ -209,5 +209,27 @@ namespace Redatech.Service.RedacaoService
 
             return response;
         }
+
+        //Editar depois, lista pelos caracteres passados
+        public async Task<ServiceResponse<List<RedacaoDto>>> GetRedacoesByName(string nome)
+        {
+            ServiceResponse<List<RedacaoDto>> serviceResponse = new ServiceResponse<List<RedacaoDto>>();
+
+            try
+            {
+                List<RedacaoModel> redacoes = await _context.Redacoes.ToListAsync();
+
+                serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(redacoes);
+                serviceResponse.Mensagem = "Lista de redações obtida com sucesso";
+                serviceResponse.Sucesso = true;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Mensagem = ex.Message;
+                serviceResponse.Sucesso = false;
+            }
+
+            return serviceResponse;
+        }
     }
 }

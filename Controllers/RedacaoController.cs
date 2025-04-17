@@ -17,6 +17,11 @@ namespace Redatech.Controllers
             _redacaoInterface = redacaoInterface;
         }
 
+        /// <summary>
+        /// Listando todas as redações
+        /// </summary>
+        /// <param name="">Nenhum parametro é necessário</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<RedacaoDto>>>> GetRedacoes()
         {
@@ -24,6 +29,11 @@ namespace Redatech.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Buscando a redação pelo Id
+        /// </summary>
+        /// <param name="id">Id da redação que está sendo buscada</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<ServiceResponse<RedacaoDto>>> GetRedacaoById(int id)
         {
@@ -32,12 +42,17 @@ namespace Redatech.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<ServiceResponse<List<RedacaoDto>>>> CreateRedacao(RedacaoDto novaRedacao)
-        {
-            return Ok(await _redacaoInterface.CreateRedacao(novaRedacao));
-        }
+        //[HttpPost]
+        //public async Task<ActionResult<ServiceResponse<List<RedacaoDto>>>> CreateRedacao(RedacaoDto novaRedacao)
+        //{
+         //   return Ok(await _redacaoInterface.CreateRedacao(novaRedacao));
+        ///}
 
+        /// <summary>
+        /// Atualiza a redação 
+        /// </summary>
+        /// <param name="editadaRedacaoDto">Dados da redação atualizada</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPut]
         public async Task<ActionResult<ServiceResponse<List<RedacaoDto>>>> UpdateRedacao(RedacaoDto editadaRedacaoDto)
         {
@@ -45,6 +60,11 @@ namespace Redatech.Controllers
             return Ok(serviceResponse);
         }
 
+        /// <summary>
+        /// Deleta a Redação 
+        /// </summary>
+        /// <param name="id">Passar o id da Redação</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult<ServiceResponse<List<RedacaoDto>>>> DeleteRedacao(int id)
         {
@@ -52,6 +72,12 @@ namespace Redatech.Controllers
             return Ok(serviceResponse);
         }
 
+        /// <summary>
+        /// Salva a redação no sistema 
+        /// </summary>
+        /// <param name="redacaoDto">Passe os dados padrão da redação, Id e Caminho do arquivo não precisa passar, pois são gerados automaticamente!</param>
+        /// <param name="arquivo">Passar o arquivo que contém o texto</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPost("enviar-redacao")]
         public async Task<IActionResult> EnviarRedacao([FromForm] RedacaoDto redacaoDto, IFormFile arquivo)
         {

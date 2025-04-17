@@ -347,5 +347,36 @@ namespace Redatech.Service.TurmaService
 
             return response;
         }
+
+        public async Task<ServiceResponse<List<TurmaDto>>> GetTurmasByName(string nomeTurmaParcial)
+        {
+            var serviceResponse = new ServiceResponse<List<TurmaDto>>();
+
+            try
+            {
+                if (string.IsNullOrEmpty(nomeTurmaParcial))
+                {
+                    serviceResponse.Sucesso = false;
+                    serviceResponse.Mensagem = "Informe um nome para buscar.";
+                    return serviceResponse;
+                }
+
+                var turmas = await _context.Turmas
+                    .Where(u => u.Nome.StartsWith(nomeTurmaParcial))
+                    .ToListAsync();
+
+                serviceResponse.Dados = _mapper.Map<List<TurmaDto>>(turmas);
+                serviceResponse.Sucesso = true;
+                serviceResponse.Mensagem = "Turmas encontradas com sucesso!";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro: {ex.Message}";
+            }
+
+            return serviceResponse;
+        }
+
     }
 }

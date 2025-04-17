@@ -57,8 +57,8 @@ namespace Redatech.Service.UsuarioService
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
                 serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro: {ex.Message}";
             }
 
             return serviceResponse;
@@ -90,8 +90,8 @@ namespace Redatech.Service.UsuarioService
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
                 serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro: {ex.Message}";
             }
 
             return serviceResponse;
@@ -125,8 +125,8 @@ namespace Redatech.Service.UsuarioService
             catch (Exception ex)
             {
                 // Em caso de erro no processo
-                serviceResponse.Mensagem = ex.Message;
                 serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro: {ex.Message}";
             }
 
             return serviceResponse;
@@ -151,8 +151,8 @@ namespace Redatech.Service.UsuarioService
             catch (Exception ex)
             {
                 // Em caso de erro, retorna a mensagem de exceção
-                serviceResponse.Mensagem = ex.Message;
                 serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro: {ex.Message}";
             }
 
             return serviceResponse;
@@ -190,8 +190,8 @@ namespace Redatech.Service.UsuarioService
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
                 serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro: {ex.Message}";
             }
 
             return serviceResponse;
@@ -234,8 +234,41 @@ namespace Redatech.Service.UsuarioService
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
                 serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro: {ex.Message}";
+            }
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<List<UsuarioDto>>> GetUsuariosByName(string nomeParcial)
+        {
+            var serviceResponse = new ServiceResponse<List<UsuarioDto>>();
+
+            try
+            {
+                if (string.IsNullOrEmpty(nomeParcial))
+                {
+                    serviceResponse.Sucesso = false;
+                    serviceResponse.Mensagem = "Informe um nome para buscar.";
+                    return serviceResponse;
+                }
+
+                //Já o EndsWith() seria LIKE '%ami'.
+                //Contains(nomeParcial) é o equivalente a LIKE '%Nome%'
+                //StartsWith e´o equivalente a LIKE 'Nome%'
+                var usuarios = await _context.Usuarios
+                    .Where(u => u.Nome.StartsWith(nomeParcial))
+                    .ToListAsync();
+
+                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(usuarios);
+                serviceResponse.Sucesso = true;
+                serviceResponse.Mensagem = "Usuários encontrados com sucesso!";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro: {ex.Message}";
             }
 
             return serviceResponse;

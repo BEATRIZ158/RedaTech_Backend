@@ -92,6 +92,22 @@ namespace Redatech.Controllers
         }
 
         /// <summary>
+        /// Buscar usuário por caracter
+        /// </summary>
+        /// <param name="nomeParcial">Nome parcial do usuário.</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
+        [HttpGet("buscar-por-nome/{nomeParcial}")]
+        public async Task<IActionResult> BuscarUsuariosPorNome(string nomeParcial)
+        {
+            var resposta = await _usuarioInterface.GetUsuariosByName(nomeParcial);
+
+            if (!resposta.Sucesso)
+                return BadRequest(resposta.Mensagem);
+
+            return Ok(resposta);
+        }
+
+        /// <summary>
         /// Faz login do usuário com email e senha.
         /// </summary>
         /// <param name="loginDto">Dados de login do usuário.</param>
