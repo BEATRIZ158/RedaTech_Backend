@@ -133,41 +133,70 @@ namespace Redatech.Service.RedacaoService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<RedacaoDto>>> UpdateRedacao(RedacaoDto editadaRedacaoDto)
+        public async Task<ServiceResponse<RedacaoDto>> UpdateRedacaoAsync(RedacaoDto redacaoAtualizada, IFormFile? novoArquivo)
         {
-            ServiceResponse<List<RedacaoDto>> serviceResponse = new ServiceResponse<List<RedacaoDto>>();
+            var response = new ServiceResponse<RedacaoDto>();
 
             try
             {
-                RedacaoModel redacaoExistente = await _context.Redacoes
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Id == editadaRedacaoDto.Id);
+                var redacaoExistente = await _context.Redacoes.FirstOrDefaultAsync(r => r.Id == redacaoAtualizada.Id);
 
                 if (redacaoExistente == null)
                 {
-                    serviceResponse.Dados = null;
-                    serviceResponse.Mensagem = "Redação não localizada";
-                    serviceResponse.Sucesso = false;
-                    return serviceResponse;
+                    response.Mensagem = "Redação não encontrada.";
+                    response.Sucesso = false;
+                    return response;
                 }
 
-                RedacaoModel redacaoAtualizada = _mapper.Map<RedacaoModel>(editadaRedacaoDto);
+                // Atualiza os dados básicos
+                redacaoExistente.Descricao = redacaoAtualizada.Descricao;
+                redacaoExistente.DataDeEnvio = redacaoAtualizada.DataDeEnvio;
 
-                _context.Redacoes.Update(redacaoAtualizada);
+                // Se um novo arquivo foi enviado
+                if (novoArquivo != null && novoArquivo.Length > 0)
+                {
+                    // Exclui o arquivo antigo
+                    if (!string.IsNullOrEmpty(redacaoExistente.CaminhoArquivo))
+                    {
+                        var caminhoArquivoAntigo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", redacaoExistente.CaminhoArquivo);
+                        if (System.IO.File.Exists(caminhoArquivoAntigo))
+                        {
+                            System.IO.File.Delete(caminhoArquivoAntigo);
+                        }
+                    }
+
+                    // Garante que a pasta existe
+                    var pastaDestino = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "redacoes");
+                    if (!Directory.Exists(pastaDestino))
+                        Directory.CreateDirectory(pastaDestino);
+
+                    // Cria nome único
+                    var nomeArquivo = $"{Guid.NewGuid()}_{novoArquivo.FileName}";
+                    var caminhoCompleto = Path.Combine(pastaDestino, nomeArquivo);
+
+                    // Salva o novo arquivo
+                    using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+                    {
+                        await novoArquivo.CopyToAsync(stream);
+                    }
+
+                    // Atualiza o caminho no banco
+                    redacaoExistente.CaminhoArquivo = Path.Combine("redacoes", nomeArquivo);
+                }
 
                 await _context.SaveChangesAsync();
 
-                List<RedacaoModel> redacoes = await _context.Redacoes.ToListAsync();
-                serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(redacoes);
-                serviceResponse.Sucesso = true;
+                response.Dados = _mapper.Map<RedacaoDto>(redacaoExistente);
+                response.Mensagem = "Redação atualizada com sucesso!";
+                response.Sucesso = true;
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
-                serviceResponse.Sucesso = false;
+                response.Mensagem = $"Erro ao atualizar: {ex.Message}";
+                response.Sucesso = false;
             }
 
-            return serviceResponse;
+            return response;
         }
 
         public async Task<ServiceResponse<string>> UploadArquivoRedacao(IFormFile arquivo)

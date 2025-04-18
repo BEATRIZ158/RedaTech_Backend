@@ -42,22 +42,12 @@ namespace Redatech.Controllers
             return Ok(response);
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult<ServiceResponse<List<RedacaoDto>>>> CreateRedacao(RedacaoDto novaRedacao)
-        //{
-         //   return Ok(await _redacaoInterface.CreateRedacao(novaRedacao));
-        ///}
-
-        /// <summary>
-        /// Atualiza a redação 
-        /// </summary>
-        /// <param name="editadaRedacaoDto">Dados da redação atualizada</param>
-        /// <returns>Mensagem de sucesso ou erro.</returns>
-        [HttpPut]
-        public async Task<ActionResult<ServiceResponse<List<RedacaoDto>>>> UpdateRedacao(RedacaoDto editadaRedacaoDto)
+        [HttpPut("atualizar")]
+        public async Task<ActionResult<ServiceResponse<RedacaoDto>>> UpdateRedacao(
+            [FromForm] RedacaoDto redacaoDto, IFormFile? novoArquivo)
         {
-            ServiceResponse<List<RedacaoDto>> serviceResponse = await _redacaoInterface.UpdateRedacao(editadaRedacaoDto);
-            return Ok(serviceResponse);
+            var resposta = await _redacaoInterface.UpdateRedacaoAsync(redacaoDto, novoArquivo);
+            return Ok(resposta);
         }
 
         /// <summary>

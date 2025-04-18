@@ -11,6 +11,7 @@
 /Estudos/
 /Properties/
 /Migrations/
+/wwwroot/
 
 # Ignorar o arquivo de conex�o com o banco
 appsettings.json
