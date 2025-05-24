@@ -4,7 +4,6 @@
     {
         public int Id { get; set; }
         public string CaminhoArquivo { get; set; }
-        public DateTime DataDeEnvio { get; set; } = DateTime.Now.ToLocalTime();
         public int AlunoId { get; set; }
         public string Descricao { get; set; }
     }

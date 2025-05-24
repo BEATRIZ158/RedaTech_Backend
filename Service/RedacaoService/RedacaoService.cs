@@ -69,6 +69,16 @@ namespace Redatech.Service.RedacaoService
                 _context.Redacoes.Remove(redacao);
                 await _context.SaveChangesAsync();
 
+                // Exclui o arquivo da redação da pasta
+                if (!string.IsNullOrEmpty(redacao.CaminhoArquivo))
+                {
+                    var caminhoArquivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", redacao.CaminhoArquivo);
+                    if (System.IO.File.Exists(caminhoArquivo))
+                    {
+                        System.IO.File.Delete(caminhoArquivo);
+                    }
+                }
+
                 List<RedacaoModel> redacoes = await _context.Redacoes.ToListAsync();
                 serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(redacoes);
 
@@ -150,7 +160,6 @@ namespace Redatech.Service.RedacaoService
 
                 // Atualiza os dados básicos
                 redacaoExistente.Descricao = redacaoAtualizada.Descricao;
-                redacaoExistente.DataDeEnvio = redacaoAtualizada.DataDeEnvio;
 
                 // Se um novo arquivo foi enviado
                 if (novoArquivo != null && novoArquivo.Length > 0)

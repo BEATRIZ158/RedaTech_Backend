@@ -42,6 +42,11 @@ namespace Redatech.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Atualizar redação 
+        /// </summary>
+        /// <param name="redacaoDto">Passar os dados atualizados da Redação</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPut("atualizar")]
         public async Task<ActionResult<ServiceResponse<RedacaoDto>>> UpdateRedacao(
             [FromForm] RedacaoDto redacaoDto, IFormFile? novoArquivo)

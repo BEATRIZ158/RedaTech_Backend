@@ -7,6 +7,17 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configura política de CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirOrigemLocal",
+        builder => builder
+            .WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+    );
+});
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -36,13 +47,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("PermitirOrigemLocal");
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseStaticFiles();
 
 app.MapControllers();
-
-app.UseStaticFiles();
 
 app.Run();

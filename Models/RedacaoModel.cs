@@ -15,5 +15,6 @@ namespace Redatech.Models
         [ForeignKey("AlunoId")]
         public UsuarioModel Aluno { get; set; }
         public string Descricao { get; set; }
+        public string Titulo { get; set; }
     }
 }
