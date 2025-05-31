@@ -5,7 +5,7 @@ namespace Redatech.Enums
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TipoUsuario
     {
-        Aluno = 1,
-        Professor = 2
+        Aluno = 0,
+        Professor = 1
     }
 }

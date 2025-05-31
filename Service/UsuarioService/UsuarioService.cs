@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Redatech.DataContext;
 using Redatech.Dto;
 using Redatech.Estaticos.Login;
 using Redatech.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Redatech.Service.UsuarioService
 {
@@ -14,6 +18,7 @@ namespace Redatech.Service.UsuarioService
         //readonly significa que o valor dessa variável só pode ser atribuído no construtor e não pode ser alterado depois
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
         //Construtor da classe
         //Quando UsuarioService for criado, o contexto do banco será passado via injeção de dependência.

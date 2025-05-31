@@ -1,4 +1,5 @@
-﻿using Redatech.Service.CorrecaoService;
+﻿using Microsoft.AspNetCore.Authentication;
+using Redatech.Service.CorrecaoService;
 using Redatech.Service.RedacaoService;
 using Redatech.Service.TurmaService;
 using Redatech.Service.UsuarioService;
@@ -13,6 +14,7 @@ namespace Redatech.Extensions
             services.AddScoped<IRedacaoInterface, RedacaoService>();
             services.AddScoped<ITurmaInterface, TurmaService>();
             services.AddScoped<ICorrecaoInterface, CorrecaoService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
         }
     }
 }

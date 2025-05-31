@@ -10,7 +10,6 @@
 # Ignora uma pasta e tudo dentro dela
 /Estudos/
 /Properties/
-/Migrations/
 /wwwroot/
 
 # Ignorar o arquivo de conex�o com o banco

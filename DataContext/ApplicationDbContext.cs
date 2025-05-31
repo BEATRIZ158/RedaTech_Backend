@@ -15,5 +15,6 @@ namespace Redatech.DataContext
         public DbSet<RedacaoModel> Redacoes { get; set; }
         public DbSet<CorrecaoModel> Correcoes { get; set; }
         public DbSet<TurmasAlunosModel> TurmasAlunos { get; set; }
+        public DbSet<RefreshTokenModel> RefreshTokens { get; set; }
     }
 }

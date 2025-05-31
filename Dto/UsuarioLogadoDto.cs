@@ -8,5 +8,6 @@ namespace Redatech.Dto
         public string Nome { get; set; }
         public string Email { get; set; }
         public TipoUsuario TipoUsuario { get; set; }
+        public object Token { get; internal set; }
     }
 }
