@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Redatech.Config;
 using Redatech.DataContext;
 using Redatech.Extensions;
 using Redatech.Mapper;
@@ -39,6 +40,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddAutoMapper(typeof(UsuarioProfile));
 builder.Services.RegisterServices();
 
+builder.Services.AddAuthenticationConfiguration(builder.Configuration); // Aqui chama a config de Auth
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -51,6 +54,7 @@ app.UseCors("PermitirOrigemLocal");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseStaticFiles();

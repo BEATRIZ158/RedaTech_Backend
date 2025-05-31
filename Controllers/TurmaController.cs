@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Redatech.Dto;
 using Redatech.Models;
@@ -24,7 +25,7 @@ namespace Redatech.Controllers
         /// <param name="">Nenhum parametro é necessário</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> GetUsuarios()
+        public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> GetTurmas()
         {
             var response = await _turmaInterface.GetTurmas();
             return Ok(response);
@@ -35,6 +36,7 @@ namespace Redatech.Controllers
         /// </summary>
         /// <param name="id">Passa o id da turma a ser buscada</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize(Roles = "Professor")]
         [HttpGet("{id}")]
         public async Task<ActionResult<ServiceResponse<TurmaDto>>> GetTurmaById(int id)
         {
@@ -47,6 +49,7 @@ namespace Redatech.Controllers
         /// </summary>
         /// <param name="novaTurmaDto">Passa os dados da nova turma</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize(Roles = "Professor")]
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> CreateTurma(TurmaDto novaTurmaDto)
         {
@@ -58,6 +61,7 @@ namespace Redatech.Controllers
         /// </summary>
         /// <param name="editadoTurmaDto">Passa os dados atualizados da turma</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize(Roles = "Professor")]
         [HttpPut]
         public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> UpdateTurma(TurmaDto editadoTurmaDto)
         {
@@ -70,6 +74,7 @@ namespace Redatech.Controllers
         /// </summary>
         /// <param name="id">Passa o id da turma a ser ativada/inativada</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize(Roles = "Professor")]
         [HttpPut("{id}")]
         public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> InativaTurma(int id)
         {
@@ -82,6 +87,7 @@ namespace Redatech.Controllers
         /// </summary>
         /// <param name="id">Passa o id da turma.</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize(Roles = "Professor")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> DeleteTurma(int id)
         {
@@ -95,6 +101,7 @@ namespace Redatech.Controllers
         /// <param name="turmaId">Passa o id da turma.</param>
         /// <param name="alunoId">Passa o id do aluno.</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize(Roles = "Professor")]
         [HttpDelete("remover-aluno")]
         public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> RemoverUsuarioDaTurma(
             [FromQuery] int turmaId,
@@ -110,6 +117,7 @@ namespace Redatech.Controllers
         /// <param name="turmaId">Passa o id da turma.</param>
         /// <param name="alunoId">Passa o id do aluno.</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize(Roles = "Professor")]
         [HttpPost("adicionar-aluno")]
         public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> AdicionarAlunoNaTurma(
             [FromQuery] int turmaId,
@@ -124,6 +132,7 @@ namespace Redatech.Controllers
         /// </summary>
         /// <param name="turmaId">Passa o id da turma.</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize(Roles = "Professor")]
         [HttpGet("ListarAlunosDaTurma/{turmaId}")]
         public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> ListarAlunosDaTurma(int turmaId)
         {
@@ -136,6 +145,7 @@ namespace Redatech.Controllers
         /// </summary>
         /// <param name="nomeTurmaParcial">Nome parcial da turma.</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize(Roles = "Professor")]
         [HttpGet("buscar-por-nome/{nomeTurmaParcial}")]
         public async Task<IActionResult> BuscarTurmasPorNome(string nomeTurmaParcial)
         {

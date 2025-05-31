@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Redatech.Dto;
 using Redatech.Models;
 using Redatech.Service.CorrecaoService;
@@ -22,6 +23,7 @@ namespace Redatech.Controllers
         /// </summary>
         /// <param name="">Nenhum parametro é necessário</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<CorrecaoDto>>>> GetCorrecoes()
         {
@@ -34,6 +36,7 @@ namespace Redatech.Controllers
         /// </summary>
         /// <param name="id">Passa o id da correção</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<ServiceResponse<CorrecaoDto>>> GetCorrecaoById(int id)
         {
@@ -46,6 +49,7 @@ namespace Redatech.Controllers
         /// </summary>
         /// <param name="novaCorrecao">Passa os dados da nova correção</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize(Roles = "Professor")]
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<List<CorrecaoDto>>>> CreateCorrecao(CorrecaoDto novaCorrecao)
         {
@@ -57,6 +61,7 @@ namespace Redatech.Controllers
         /// </summary>
         /// <param name="editadoCorrecao">Passa os dados atualizados da correção escolhida</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize(Roles = "Professor")]
         [HttpPut]
         public async Task<ActionResult<ServiceResponse<List<CorrecaoDto>>>> UpdateCorrecao(CorrecaoDto editadoCorrecao)
         {
@@ -69,6 +74,7 @@ namespace Redatech.Controllers
         /// </summary>
         /// <param name="id">Passa o id da correção a ser deletada</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize(Roles = "Professor")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<ServiceResponse<List<CorrecaoDto>>>> DeleteCorrecao(int id)
         {
