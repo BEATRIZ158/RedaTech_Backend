@@ -71,14 +71,13 @@ namespace Redatech.provider
             return principal;
         }
 
-        public RefreshTokenModel GerarRefreshToken(string ipAddress)
+        public RefreshTokenModel GerarRefreshToken()
         {
             var refreshToken = new RefreshTokenModel
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
                 DataCriacao = DateTime.UtcNow,
-                DataExpiracao = DateTime.UtcNow.AddDays(7),
-                IpCriacao = ipAddress
+                DataExpiracao = DateTime.UtcNow.AddDays(7)
             };
 
             return refreshToken;

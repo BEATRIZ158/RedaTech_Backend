@@ -114,21 +114,5 @@ namespace Redatech.Controllers
 
             return Ok(resposta);
         }
-
-        /// <summary>
-        /// Faz login do usuário com email e senha.
-        /// </summary>
-        /// <param name="loginDto">Dados de login do usuário.</param>
-        /// <returns>Mensagem de sucesso ou erro.</returns>
-        
-        [HttpPost("login")]
-        public async Task<ActionResult<ServiceResponse<UsuarioLogadoDto>>> Login([FromBody] LoginDto loginDto)
-        {
-            var resposta = await _usuarioInterface.Login(loginDto);
-            if (!resposta.Sucesso)
-                return BadRequest(resposta);
-
-            return Ok(resposta);
-        }
     }
 }

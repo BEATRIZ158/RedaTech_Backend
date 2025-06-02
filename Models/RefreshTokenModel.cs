@@ -15,7 +15,6 @@ namespace Redatech.Models
         
         public DateTime DataCriacao { get; set; }
         public DateTime DataExpiracao { get; set; }
-        public string IpCriacao { get; set; }
         public DateTime? DataRevogado { get; set; }
         public string SubstituidoPor { get; set; }
         public bool Ativo => DataRevogado == null && !Expirado;

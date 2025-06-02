@@ -19,5 +19,7 @@ public class UsuarioProfile : Profile
         // Novo mapeamento: UsuarioModel -> AlunoNaTurmaDto
         CreateMap<UsuarioModel, AlunoNaTurmaDto>()
             .ForMember(dest => dest.DataVinculo, opt => opt.Ignore()); // vamos preencher no service
+
+        CreateMap<UsuarioModel, UsuarioLogadoDto>().ReverseMap();
     }
 }

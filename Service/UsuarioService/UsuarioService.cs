@@ -278,34 +278,5 @@ namespace Redatech.Service.UsuarioService
 
             return serviceResponse;
         }
-
-        public async Task<ServiceResponse<UsuarioLogadoDto>> Login(LoginDto loginDto)
-        {
-            var response = new ServiceResponse<UsuarioLogadoDto>();
-
-            var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
-
-            if (usuario == null || !CriptografiaHash.VerificarSenha(loginDto.Senha, usuario.SenhaHash))
-            {
-                response.Sucesso = false;
-                response.Mensagem = "Usuário ou senha inválidos!";
-                return response;
-            }
-
-            var usuarioLogado = new UsuarioLogadoDto
-            {
-                Id = usuario.Id,
-                Nome = usuario.Nome,
-                Email = usuario.Email,
-                TipoUsuario = usuario.TipoUsuario
-            };
-
-            response.Sucesso = true;
-            response.Mensagem = "Login realizado com sucesso!";
-            response.Dados = usuarioLogado;
-
-            return response;
-        }
     }
 }
