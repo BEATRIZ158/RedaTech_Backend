@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using Redatech.DataContext;
 using Redatech.Dto;
 using Redatech.Models;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,10 +12,12 @@ namespace Redatech.provider
     public class TokenProvider
     {
         private readonly IConfiguration _configuration;
+        private readonly ApplicationDbContext _context;
 
-        public TokenProvider(IConfiguration configuration)
+        public TokenProvider(IConfiguration configuration, ApplicationDbContext context)
         {
             _configuration = configuration;
+            _context = context;
         }
 
         public string GerarToken(UsuarioLogadoDto usuario)
@@ -81,6 +84,37 @@ namespace Redatech.provider
             };
 
             return refreshToken;
+        }
+
+        public string GerarTokenDepoisDeExperir(RefreshTokenDto refreshToken)
+        {
+            RefreshTokenModel refreshTokenModel = _context.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken.ToString());
+            UsuarioModel usuario = _context.Usuarios.FirstOrDefault(x => x.Id == refreshTokenModel.UsuarioId);
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, refreshTokenModel.Id.ToString()),
+                new Claim(ClaimTypes.Name, usuario.Nome),
+                new Claim(ClaimTypes.Email, usuario.Email),
+                new Claim(ClaimTypes.Role, usuario.TipoUsuario.ToString())
+            };
+
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var expiration = DateTime.UtcNow.AddHours(2);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: expiration,
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

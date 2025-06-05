@@ -6,5 +6,6 @@
         public string CaminhoArquivo { get; set; }
         public int AlunoId { get; set; }
         public string Descricao { get; set; }
+        public string Titulo { get; set; }
     }
 }

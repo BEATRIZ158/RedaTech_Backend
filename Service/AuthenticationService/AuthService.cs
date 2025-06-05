@@ -27,6 +27,24 @@ namespace Redatech.Service.AuthenticationService
             _mapper = mapper;
         }
 
+        public Task<ServiceResponse<AuthResponseDto>> GerarNovoTokenDepoisDeExpirar(RefreshTokenDto refreshToken)
+        {
+            var serviceResponse = new ServiceResponse<AuthResponseDto>();
+
+            //Gerando novo Token
+            var dadosUsuario = new AuthResponseDto
+            {
+                Nome = usuario.Nome,
+                Role = usuario.TipoUsuario.ToString(),
+                Token = _tokenProvider.GerarToken(usuarioLogado),
+                RefreshToken = refreshToken.Token,
+                DataCriacao = refreshToken.DataCriacao,
+                DataExpiracao = refreshToken.DataExpiracao
+            };
+
+            return serviceResponse;
+        }
+
         public async Task<ServiceResponse<AuthResponseDto>> Login(LoginDto loginDto)
         {
             var serviceResponse = new ServiceResponse<AuthResponseDto>();
