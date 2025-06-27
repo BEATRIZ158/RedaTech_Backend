@@ -27,6 +27,5 @@ namespace Redatech.Mapper
         {
             return sourceList.Select(source => _mapper.Map<TDestination>(source)).ToList();
         }
-
     }
 }

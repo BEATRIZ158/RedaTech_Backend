@@ -12,6 +12,10 @@ namespace Redatech.Service.RedacaoService
         Task<ServiceResponse<RedacaoDto>> UpdateRedacaoAsync(RedacaoDto redacaoAtualizada, IFormFile? novoArquivo);
         Task<ServiceResponse<List<RedacaoDto>>> DeleteRedacao(int id);
         Task<ServiceResponse<string>> UploadArquivoRedacao(IFormFile arquivo);
-        Task<ServiceResponse<List<RedacaoDto>>> GetRedacoesByName(string nomeParcial);
+        Task<ServiceResponse<List<RedacaoDto>>> GetRedacoesByTitulo(string tituloParcial);
+        Task<ServiceResponse<List<RedacaoDto>>> CreateRedacaoComUpload(RedacaoUploadDto dto);
+        Task<ServiceResponse<List<RedacaoDto>>> ListarRedacoesPorTurma(int idTurma);
+        Task<ServiceResponse<List<RedacaoDto>>> ListarRedacoesComCorrecao(int idTurma);
+        Task<ServiceResponse<List<RedacaoDto>>> ListarRedacoesSemCorrecao(int idTurma);
     }
 }

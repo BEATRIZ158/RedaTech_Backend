@@ -1,12 +1,19 @@
 ﻿using AutoMapper;
 using Redatech.Dto;
+using Redatech.Enums;
 using Redatech.Models;
 
 public class UsuarioProfile : Profile
 {
     public UsuarioProfile()
     {
-        CreateMap<UsuarioModel, UsuarioDto>().ReverseMap();
+        CreateMap<UsuarioModel, UsuarioDto>()
+        .ForMember(dest => dest.TipoUsuario,
+                   opt => opt.MapFrom(src => Enum.GetName(typeof(TipoUsuario), src.TipoUsuario))) // <-- aqui!
+        .ReverseMap()
+        .ForMember(dest => dest.TipoUsuario,
+                   opt => opt.MapFrom(src => Enum.Parse<TipoUsuario>(src.TipoUsuario)));
+
         CreateMap<RedacaoModel, RedacaoDto>().ReverseMap();
         CreateMap<CorrecaoModel, CorrecaoDto>().ReverseMap();
         CreateMap<TurmaModel, TurmaDto>().ReverseMap();
@@ -21,5 +28,7 @@ public class UsuarioProfile : Profile
             .ForMember(dest => dest.DataVinculo, opt => opt.Ignore()); // vamos preencher no service
 
         CreateMap<UsuarioModel, UsuarioLogadoDto>().ReverseMap();
+
+        CreateMap<RefreshTokenDto, RefreshTokenModel>().ReverseMap();
     }
 }

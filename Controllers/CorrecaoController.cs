@@ -81,5 +81,12 @@ namespace Redatech.Controllers
             ServiceResponse<List<CorrecaoDto>> serviceResponse = await _correcaoInterface.DeleteCorrecao(id);
             return Ok(serviceResponse);
         }
+
+        [HttpGet("listar-com-titulo")]
+        public async Task<ActionResult<List<CorrecaoComTituloRedacaoDto>>> ListarComTitulos([FromQuery] string? titulo)
+        {
+            var resultado = await _correcaoInterface.ListarCorrecoesComTituloAsync(titulo);
+            return Ok(resultado);
+        }
     }
 }

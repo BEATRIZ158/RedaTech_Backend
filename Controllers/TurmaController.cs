@@ -24,7 +24,8 @@ namespace Redatech.Controllers
         /// </summary>
         /// <param name="">Nenhum parametro é necessário</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
-        [HttpGet]
+        [Authorize(Roles = "Professor")]
+        [HttpGet("listar-todas-turmas")]
         public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> GetTurmas()
         {
             var response = await _turmaInterface.GetTurmas();
@@ -134,9 +135,17 @@ namespace Redatech.Controllers
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [Authorize(Roles = "Professor")]
         [HttpGet("ListarAlunosDaTurma/{turmaId}")]
-        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> ListarAlunosDaTurma(int turmaId)
+        public async Task<ActionResult<ServiceResponse<List<AlunoNaTurmaDto>>>> ListarAlunosDaTurma(int turmaId)
         {
             var response = await _turmaInterface.ListarAlunosDaTurma(turmaId);
+            return Ok(response);
+        }
+
+        [Authorize(Roles = "Professor")]
+        [HttpGet("ListarAlunosForaDaTurma/{turmaId}")]
+        public async Task<ActionResult<ServiceResponse<List<AlunoForaDaTurmaDto>>>> ListarAlunosForaDaTurma(int turmaId)
+        {
+            var response = await _turmaInterface.ListarAlunosForaDaTurma(turmaId);
             return Ok(response);
         }
 
@@ -155,6 +164,14 @@ namespace Redatech.Controllers
                 return BadRequest(resposta.Mensagem);
 
             return Ok(resposta);
+        }
+
+        [Authorize(Roles = "Professor")]
+        [HttpGet("listar-todos-alunos")]
+        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> GetAlunosSalvos()
+        {
+            var response = await _turmaInterface.ListarAlunosSalvos();
+            return Ok(response);
         }
     }
 }

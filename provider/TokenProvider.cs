@@ -85,7 +85,7 @@ namespace Redatech.provider
 
             return refreshToken;
         }
-
+         
         public string GerarTokenDepoisDeExperir(RefreshTokenDto refreshToken)
         {
             RefreshTokenModel refreshTokenModel = _context.RefreshTokens.FirstOrDefault(x => x.Token == refreshToken.ToString());

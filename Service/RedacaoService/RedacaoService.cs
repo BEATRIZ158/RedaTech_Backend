@@ -160,6 +160,7 @@ namespace Redatech.Service.RedacaoService
 
                 // Atualiza os dados básicos
                 redacaoExistente.Descricao = redacaoAtualizada.Descricao;
+                redacaoExistente.Titulo = redacaoAtualizada.Titulo;
 
                 // Se um novo arquivo foi enviado
                 if (novoArquivo != null && novoArquivo.Length > 0)
@@ -248,23 +249,183 @@ namespace Redatech.Service.RedacaoService
             return response;
         }
 
-        //Editar depois, lista pelos caracteres passados
-        public async Task<ServiceResponse<List<RedacaoDto>>> GetRedacoesByName(string nome)
+        public async Task<ServiceResponse<List<RedacaoDto>>> GetRedacoesByTitulo(string tituloParcial)
         {
-            ServiceResponse<List<RedacaoDto>> serviceResponse = new ServiceResponse<List<RedacaoDto>>();
+            var serviceResponse = new ServiceResponse<List<RedacaoDto>>();
 
             try
             {
-                List<RedacaoModel> redacoes = await _context.Redacoes.ToListAsync();
+                if (string.IsNullOrEmpty(tituloParcial))
+                {
+                    serviceResponse.Sucesso = false;
+                    serviceResponse.Mensagem = "Informe um título para buscar.";
+                    return serviceResponse;
+                }
+
+                var redacoes = await _context.Redacoes
+                    .Where(u => u.Titulo.StartsWith(tituloParcial))
+                    .ToListAsync();
 
                 serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(redacoes);
-                serviceResponse.Mensagem = "Lista de redações obtida com sucesso";
+                serviceResponse.Sucesso = true;
+                serviceResponse.Mensagem = "Redação encontrada com sucesso!";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro: {ex.Message}";
+            }
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<List<RedacaoDto>>> CreateRedacaoComUpload(RedacaoUploadDto dto)
+        {
+            var response = new ServiceResponse<List<RedacaoDto>>();
+
+            try
+            {
+                if (dto == null || dto.Arquivo == null || dto.Arquivo.Length == 0)
+                {
+                    response.Sucesso = false;
+                    response.Mensagem = "Dados ou arquivo inválido.";
+                    return response;
+                }
+
+                // 1. Faz upload do arquivo
+                var nomeArquivo = Guid.NewGuid().ToString() + Path.GetExtension(dto.Arquivo.FileName);
+                var caminhoPasta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "redacoes");
+
+                if (!Directory.Exists(caminhoPasta))
+                    Directory.CreateDirectory(caminhoPasta);
+
+                var caminhoCompleto = Path.Combine(caminhoPasta, nomeArquivo);
+                using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+                {
+                    await dto.Arquivo.CopyToAsync(stream);
+                }
+
+                var caminhoBanco = Path.Combine("redacoes", nomeArquivo).Replace("\\", "/");
+
+                // 2. Cria a Redação com o caminho do arquivo
+                var redacao = new RedacaoModel
+                {
+                    AlunoId = dto.AlunoId,
+                    Titulo = dto.Titulo,
+                    Descricao = dto.Descricao,
+                    CaminhoArquivo = caminhoBanco
+                };
+
+                _context.Redacoes.Add(redacao);
+                await _context.SaveChangesAsync();
+
+                response.Dados = _mapper.Map<List<RedacaoDto>>(_context.Redacoes.ToList());
+                response.Mensagem = "Redação criada com sucesso!";
+            }
+            catch (Exception ex)
+            {
+                response.Sucesso = false;
+                response.Mensagem = ex.Message;
+
+                if (ex.InnerException != null)
+                {
+                    response.Mensagem += " Detalhes: " + ex.InnerException.Message;
+                }
+            }
+
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<RedacaoDto>>> ListarRedacoesPorTurma(int idTurma)
+        {
+            var serviceResponse = new ServiceResponse<List<RedacaoDto>>();
+
+            try
+            {
+                var redacoes = await _context.Redacoes
+                    .FromSqlInterpolated($@"
+                        SELECT r.*
+                        FROM Redacoes r
+                        WHERE r.AlunoId IN (
+                            SELECT AlunoId FROM TurmasAlunos WHERE TurmaId = {idTurma}
+                        )
+                    ")
+                    .ToListAsync();
+
+                var redacoesDto = _mapper.Map<List<RedacaoDto>>(redacoes);
+
+                serviceResponse.Dados = redacoesDto;
+                serviceResponse.Sucesso = true;
+                serviceResponse.Mensagem = "Redações da turma listadas com sucesso.";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro ao listar redações por turma: {ex.Message}";
+            }
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<List<RedacaoDto>>> ListarRedacoesComCorrecao(int idTurma)
+        {
+            var serviceResponse = new ServiceResponse<List<RedacaoDto>>();
+
+            try
+            {
+                var redacoesComCorrecao = await _context.Redacoes
+                    .FromSqlInterpolated($@"
+                        SELECT r.*
+                        FROM Redacoes r
+                        INNER JOIN Correcoes c ON c.RedacaoId = r.Id
+                        WHERE r.UsuarioId IN (
+                            SELECT AlunoId FROM TurmasAlunos WHERE TurmaId = {idTurma}
+                        )
+                    ")
+                    .ToListAsync();
+
+                var redacoesDto = _mapper.Map<List<RedacaoDto>>(redacoesComCorrecao);
+
+                serviceResponse.Dados = redacoesDto;
                 serviceResponse.Sucesso = true;
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
                 serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro ao buscar redações com correção: {ex.Message}";
+            }
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<List<RedacaoDto>>> ListarRedacoesSemCorrecao(int idTurma)
+        {
+            var serviceResponse = new ServiceResponse<List<RedacaoDto>>();
+
+            try
+            {
+                var redacoesSemCorrecao = await _context.Redacoes
+                    .FromSqlInterpolated($@"
+                        SELECT r.*
+                        FROM Redacoes r
+                        WHERE r.UsuarioId IN (
+                            SELECT AlunoId FROM TurmasAlunos WHERE TurmaId = {idTurma}
+                        )
+                        AND r.Id NOT IN (
+                            SELECT RedacaoId FROM Correcoes
+                        )
+                    ")
+                    .ToListAsync();
+
+                var redacoesDto = _mapper.Map<List<RedacaoDto>>(redacoesSemCorrecao);
+
+                serviceResponse.Dados = redacoesDto;
+                serviceResponse.Sucesso = true;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro ao buscar redações sem correção: {ex.Message}";
             }
 
             return serviceResponse;

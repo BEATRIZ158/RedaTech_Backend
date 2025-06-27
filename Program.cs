@@ -2,9 +2,7 @@
 using Redatech.Config;
 using Redatech.DataContext;
 using Redatech.Extensions;
-using Redatech.Mapper;
 using Redatech.Service.UsuarioService;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,10 +55,12 @@ builder.Services.AddSwaggerGen(c =>
             new List<string>()
         }
     });
+
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 
-
-//Quando eu fizer um inje��o de depend�ncia de IUsaurioInteface, estou querendo utilizar os m�todos do UsuarioService (L�gica)
 builder.Services.AddScoped<IUsuarioInterface, UsuarioService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -71,6 +71,10 @@ builder.Services.AddAutoMapper(typeof(UsuarioProfile));
 builder.Services.RegisterServices();
 
 builder.Services.AddAuthenticationConfiguration(builder.Configuration); // Aqui chama a config de Auth
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 
 var app = builder.Build();
 

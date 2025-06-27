@@ -10,7 +10,7 @@ namespace Redatech.Dto
         public string Email { get; set; } //email
         public string Cpf { get; set; } //CPF
         public DateTime DataNascimento { get; set; }
-        public TipoUsuario TipoUsuario { get; set; }
+        public string TipoUsuario { get; set; } //Era TipoUsuario, mas alterei para string para facilitar a serialização
         public string SenhaHash { get; set; }
         public bool Status { get; set; }
     }

@@ -124,7 +124,6 @@ namespace Redatech.Service.CorrecaoService
                 List<CorrecaoModel> correcoes = await _context.Correcoes.ToListAsync();
 
                 serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(correcoes);
-
                 serviceResponse.Mensagem = "Lista de correções obtida com sucesso";
                 serviceResponse.Sucesso = true;
             }
@@ -135,6 +134,68 @@ namespace Redatech.Service.CorrecaoService
             }
 
             return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<List<CorrecaoDto>>> ListaCorrecoesDeAluno(int alunoId)
+        {
+            ServiceResponse<List<CorrecaoDto>> serviceResponse = new ServiceResponse<List<CorrecaoDto>>();
+
+            var aluno = _context.Usuarios.FirstOrDefault(x => x.Id == alunoId);
+            
+            if(aluno == null)
+            {
+                serviceResponse.Dados = null;
+                serviceResponse.Mensagem = "Aluno não localizado";
+                serviceResponse.Sucesso = false;
+                return serviceResponse;
+            }
+
+            List<RedacaoModel> redacoes = _context.Redacoes
+                .Where(c => c.AlunoId == alunoId)
+                .ToList();
+
+            try
+            {
+                List<CorrecaoModel> correcoes = _context.Correcoes
+                .Where(c => redacoes.Any(r => r.Id == c.RedacaoId))
+                .ToList();
+
+                serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(correcoes);
+                serviceResponse.Mensagem = "Lista de correções do aluno obtida com sucesso";
+                serviceResponse.Sucesso = true;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Mensagem = ex.Message;
+                serviceResponse.Sucesso = false;
+            }
+
+            return serviceResponse;
+        }
+
+        public async Task<List<CorrecaoComTituloRedacaoDto>> ListarCorrecoesComTituloAsync(string? titulo)
+        {
+            var query = _context.Correcoes
+                .Include(c => c.Redacao)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(titulo))
+            {
+                query = query.Where(c => c.Redacao.Titulo.Contains(titulo));
+            }
+
+            var correcoes = await query.ToListAsync();
+
+            return correcoes.Select(c => new CorrecaoComTituloRedacaoDto
+            {
+                Id = c.Id,
+                RedacaoId = c.RedacaoId,
+                TituloRedacao = c.Redacao.Titulo,
+                ProfessorId = c.ProfessorId,
+                Comentarios = c.Comentarios,
+                Nota = (double)c.Nota,
+                Status = c.Status.ToString()
+            }).ToList();
         }
 
         public async Task<ServiceResponse<List<CorrecaoDto>>> UpdateCorrecao(CorrecaoDto editadoCorrecaoDto)

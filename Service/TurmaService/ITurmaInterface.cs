@@ -13,7 +13,9 @@ namespace Redatech.Service.TurmaService
         Task<ServiceResponse<List<TurmaDto>>> DeleteTurma(int id);
         Task<ServiceResponse<string>> AdicionarAlunoNaTurma(int turmaId, int alunoId);
         Task<ServiceResponse<string>> RemoverAlunoDaTurma(int turmaId, int alunoId);
-        Task<ServiceResponse<List<UsuarioDto>>> ListarAlunosDaTurma(int turmaId);
+        Task<ServiceResponse<List<AlunoNaTurmaDto>>> ListarAlunosDaTurma(int turmaId);
+        Task<ServiceResponse<List<AlunoForaDaTurmaDto>>> ListarAlunosForaDaTurma(int turmaId);
         Task<ServiceResponse<List<TurmaDto>>> GetTurmasByName(string nomeTurmaParcial);
+        Task<ServiceResponse<List<UsuarioDto>>> ListarAlunosSalvos();
     }
 }

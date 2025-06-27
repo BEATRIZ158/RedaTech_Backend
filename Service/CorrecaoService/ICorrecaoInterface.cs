@@ -1,4 +1,5 @@
-﻿using Redatech.Dto;
+﻿using Microsoft.AspNetCore.Mvc;
+using Redatech.Dto;
 using Redatech.Models;
 
 namespace Redatech.Service.CorrecaoService
@@ -10,5 +11,7 @@ namespace Redatech.Service.CorrecaoService
         Task<ServiceResponse<CorrecaoDto>> GetCorrecaoById(int id);
         Task<ServiceResponse<List<CorrecaoDto>>> UpdateCorrecao(CorrecaoDto editadoCorrecaoDto);
         Task<ServiceResponse<List<CorrecaoDto>>> DeleteCorrecao(int id);
+        Task<ServiceResponse<List<CorrecaoDto>>> ListaCorrecoesDeAluno(int alunoId);
+        Task<List<CorrecaoComTituloRedacaoDto>> ListarCorrecoesComTituloAsync(string? titulo);
     }
 }

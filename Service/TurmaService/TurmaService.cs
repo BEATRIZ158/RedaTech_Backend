@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Azure;
 using Microsoft.EntityFrameworkCore;
 using Redatech.DataContext;
 using Redatech.Dto;
+using Redatech.Enums;
 using Redatech.Models;
 
 namespace Redatech.Service.TurmaService
@@ -45,8 +47,9 @@ namespace Redatech.Service.TurmaService
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
                 serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro ao salvar no banco: {ex.InnerException?.Message ?? ex.Message}";
+                return serviceResponse;
             }
 
             return serviceResponse;
@@ -310,42 +313,44 @@ namespace Redatech.Service.TurmaService
 
             return response;
         }
-
-        public async Task<ServiceResponse<List<UsuarioDto>>> ListarAlunosDaTurma(int turmaId)
+        public async Task<ServiceResponse<List<AlunoNaTurmaDto>>> ListarAlunosDaTurma(int turmaId)
         {
-            var response = new ServiceResponse<List<UsuarioDto>>();
+            var serviceResponse = new ServiceResponse<List<AlunoNaTurmaDto>>();
 
             try
             {
-                var alunosIds = await _context.TurmasAlunos
-                    .Where(t => t.TurmaId == turmaId)
-                    .Select(t => t.AlunoId)
-                    .ToListAsync();
-
-                var alunos = await _context.Usuarios
-                    .Where(u => alunosIds.Contains(u.Id))
-                    .ToListAsync();
-
+                // Verifica se a turma existe
                 var turma = await _context.Turmas.FirstOrDefaultAsync(x => x.Id == turmaId);
-
                 if (turma == null)
                 {
-                    response.Sucesso = false;
-                    response.Mensagem = "Turma não encontrada.";
-                    return response;
+                    serviceResponse.Sucesso = false;
+                    serviceResponse.Mensagem = "Turma não encontrada.";
+                    return serviceResponse;
                 }
 
-                response.Dados = _mapper.Map<List<UsuarioDto>>(alunos);
-                response.Sucesso = true;
-                response.Mensagem = "Lista de alunos obtida com sucesso.";
+                // Consulta alunos da turma com join direto
+                var alunosDto = await (from ta in _context.TurmasAlunos
+                                       join u in _context.Usuarios on ta.AlunoId equals u.Id
+                                       where ta.TurmaId == turmaId
+                                       select new AlunoNaTurmaDto
+                                       {
+                                           Id = u.Id,
+                                           Nome = u.Nome,
+                                           Email = u.Email,
+                                           DataVinculo = ta.DataAcao
+                                       }).ToListAsync();
+
+                serviceResponse.Dados = alunosDto;
+                serviceResponse.Sucesso = true;
+                serviceResponse.Mensagem = "Lista de alunos obtida com sucesso.";
             }
             catch (Exception ex)
             {
-                response.Sucesso = false;
-                response.Mensagem = $"Erro ao buscar alunos da turma: {ex.Message}";
+                serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro ao buscar alunos da turma: {ex.Message}";
             }
 
-            return response;
+            return serviceResponse;
         }
 
         public async Task<ServiceResponse<List<TurmaDto>>> GetTurmasByName(string nomeTurmaParcial)
@@ -378,5 +383,61 @@ namespace Redatech.Service.TurmaService
             return serviceResponse;
         }
 
+        public async Task<ServiceResponse<List<UsuarioDto>>> ListarAlunosSalvos()
+        {
+            var serviceResponse = new ServiceResponse<List<UsuarioDto>>();
+            try
+            {
+                var alunos = await _context.Usuarios
+                    .Where(u => u.TipoUsuario == TipoUsuario.Aluno)
+                    .ToListAsync();
+
+                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(alunos);
+                serviceResponse.Sucesso = true;
+                serviceResponse.Mensagem = "Lista de todos os alunos obtida com sucesso.";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro ao listar alunos: {ex.Message}";
+            }
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<List<AlunoForaDaTurmaDto>>> ListarAlunosForaDaTurma(int turmaId)
+        {
+            var serviceResponse = new ServiceResponse<List<AlunoForaDaTurmaDto>>();
+
+            try
+            {
+                var alunosFora = await _context.Usuarios
+                    .FromSqlInterpolated($@"
+                        SELECT u.Id, u.Nome, u.Email
+                        FROM Usuarios u
+                        WHERE u.TipoUsuario = 0 AND u.Id NOT IN (
+                            SELECT AlunoId FROM TurmasAlunos WHERE TurmaId = {turmaId}
+                        )
+                    ")
+                    .Select(a => new AlunoForaDaTurmaDto
+                    {
+                        Id = a.Id,
+                        Nome = a.Nome,
+                        Email = a.Email
+                    })
+                    .ToListAsync();
+
+                serviceResponse.Dados = alunosFora;
+                serviceResponse.Sucesso = true;
+                serviceResponse.Mensagem = "Lista de alunos fora da turma obtida com sucesso.";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro ao buscar alunos fora da turma: {ex.Message}";
+            }
+
+            return serviceResponse;
+        }
     }
 }

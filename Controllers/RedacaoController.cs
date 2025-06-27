@@ -73,28 +73,74 @@ namespace Redatech.Controllers
         }
 
         /// <summary>
-        /// Salva a redação no sistema 
+        /// Buscar redacoes por titulo parcial 
         /// </summary>
-        /// <param name="redacaoDto">Passe os dados padrão da redação, Id e Caminho do arquivo não precisa passar, pois são gerados automaticamente!</param>
-        /// <param name="arquivo">Passar o arquivo que contém o texto</param>
+        /// <param titulo="tituloParcial">Passar o titulo parcial da redação</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize]
+        [HttpGet("buscar-por-titulo/{tituloParcial}")]
+        public async Task<IActionResult> BuscarRedacoesPorTitulo(string tituloParcial)
+        {
+            var resposta = await _redacaoInterface.GetRedacoesByTitulo(tituloParcial);
+
+            if (!resposta.Sucesso)
+                return BadRequest(resposta.Mensagem);
+
+            return Ok(resposta);
+        }
+
+        /// <summary>
+        /// Buscar redacoes por titulo parcial 
+        /// </summary>
+        /// <param redacao="dto">Passar o titulo parcial da redação</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [Authorize(Roles = "Aluno")]
         [HttpPost("enviar-redacao")]
-        public async Task<IActionResult> EnviarRedacao([FromForm] RedacaoDto redacaoDto, IFormFile arquivo)
+        public async Task<IActionResult> EnviarRedacao([FromForm] RedacaoUploadDto dto)
         {
-            var uploadResponse = await _redacaoInterface.UploadArquivoRedacao(arquivo);
+            var response = await _redacaoInterface.CreateRedacaoComUpload(dto);
 
-            if (!uploadResponse.Sucesso)
-                return BadRequest(uploadResponse.Mensagem);
+            if (!response.Sucesso)
+                return BadRequest(response.Mensagem);
 
-            redacaoDto.CaminhoArquivo = uploadResponse.Dados;
+            return Ok(response);
+        }
 
-            var createResponse = await _redacaoInterface.CreateRedacao(redacaoDto);
+        /// <summary>
+        /// Listar redações por turma
+        /// </summary>
+        /// <param idturma="idTurma">Passar o id da Redação</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
+        [HttpGet("listar-por-turma/{idTurma}")]
+        public async Task<ActionResult<ServiceResponse<List<RedacaoDto>>>> ListarRedacoesPorTurma(int idTurma)
+        {
+            var response = await _redacaoInterface.ListarRedacoesPorTurma(idTurma);
+            return Ok(response);
+        }
 
-            if (!createResponse.Sucesso)
-                return BadRequest(createResponse.Mensagem);
 
-            return Ok(createResponse);
+        /// <summary>
+        /// Listar redações com correção
+        /// </summary>
+        /// <param idturma="idTurma">Passar o id da Turma</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
+        [HttpGet("listar-com-correcao/{idTurma}")]
+        public async Task<ActionResult<ServiceResponse<List<RedacaoDto>>>> ListarRedacoesComCorrecao(int idTurma)
+        {
+            var response = await _redacaoInterface.ListarRedacoesComCorrecao(idTurma);
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Listar redações sem correção
+        /// </summary>
+        /// <param idturma="idTurma">Passar o id da Turma</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
+        [HttpGet("listar-sem-correcao/{idTurma}")]
+        public async Task<ActionResult<ServiceResponse<List<RedacaoDto>>>> ListarRedacoesSemCorrecao(int idTurma)
+        {
+            var response = await _redacaoInterface.ListarRedacoesSemCorrecao(idTurma);
+            return Ok(response);
         }
     }
 }

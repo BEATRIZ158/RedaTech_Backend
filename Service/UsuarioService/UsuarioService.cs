@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Redatech.DataContext;
 using Redatech.Dto;
+using Redatech.Enums;
 using Redatech.Estaticos.Login;
 using Redatech.Models;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 
 namespace Redatech.Service.UsuarioService
 {
@@ -19,14 +17,16 @@ namespace Redatech.Service.UsuarioService
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         //Construtor da classe
         //Quando UsuarioService for criado, o contexto do banco será passado via injeção de dependência.
         //_context = context; armazena essa instância para ser usada nos métodos do serviço.
-        public UsuarioService(ApplicationDbContext context, IMapper mapper)
+        public UsuarioService(ApplicationDbContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _mapper = mapper; // Agora o AutoMapper pode ser usado no Service
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ServiceResponse<List<UsuarioDto>>> CreateUsuario(UsuarioDto novoUsuarioDto)
@@ -45,6 +45,23 @@ namespace Redatech.Service.UsuarioService
 
                 // Mapeia o DTO para a entidade que será salva no banco
                 UsuarioModel novoUsuario = _mapper.Map<UsuarioModel>(novoUsuarioDto);
+
+                if (ValidaCpf(novoUsuario) != false)
+                {
+                    serviceResponse.Dados = null;
+                    serviceResponse.Mensagem = "CPF já cadastrado.";
+                    serviceResponse.Sucesso = false;
+                    return serviceResponse;
+                }
+
+                if (ValidaEmail(novoUsuario) != false)
+                {
+                    serviceResponse.Dados = null;
+                    serviceResponse.Mensagem = "E-mail já cadastrado.";
+                    serviceResponse.Sucesso = false;
+                    return serviceResponse;
+                }
+
                 novoUsuario.Status = true;
 
                 novoUsuario.SenhaHash = CriptografiaHash.GerarHash(novoUsuarioDto.SenhaHash);
@@ -63,7 +80,8 @@ namespace Redatech.Service.UsuarioService
             catch (Exception ex)
             {
                 serviceResponse.Sucesso = false;
-                serviceResponse.Mensagem = $"Erro: {ex.Message}";
+                var mensagemErro = ex.InnerException?.Message ?? ex.Message;
+                serviceResponse.Mensagem = $"Erro ao salvar no banco: {mensagemErro}";
             }
 
             return serviceResponse;
@@ -122,6 +140,7 @@ namespace Redatech.Service.UsuarioService
 
                 // Se o usuário for encontrado, mapeia para o DTO
                 serviceResponse.Dados = _mapper.Map<UsuarioDto>(usuario);
+
 
                 // Sucesso
                 serviceResponse.Mensagem = "Usuário encontrado com sucesso";
@@ -202,9 +221,9 @@ namespace Redatech.Service.UsuarioService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<UsuarioDto>>> UpdateUsuario(UsuarioDto editadoUsuarioDto)
+        public async Task<ServiceResponse<UsuarioDto>> UpdateUsuario(UsuarioDto editadoUsuarioDto)
         {
-            ServiceResponse<List<UsuarioDto>> serviceResponse = new ServiceResponse<List<UsuarioDto>>();
+            ServiceResponse<UsuarioDto> serviceResponse = new ServiceResponse<UsuarioDto>();
 
             try
             {
@@ -232,9 +251,8 @@ namespace Redatech.Service.UsuarioService
                 // Salva as mudanças no banco
                 await _context.SaveChangesAsync();
 
-                // Retorna a lista atualizada de usuários
-                List<UsuarioModel> usuarios = await _context.Usuarios.ToListAsync();
-                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(usuarios);
+                serviceResponse.Dados = _mapper.Map<UsuarioDto>(usuarioAtualizado);
+                serviceResponse.Mensagem = "Usuário atualizado com sucesso!";
                 serviceResponse.Sucesso = true;
             }
             catch (Exception ex)
@@ -277,6 +295,126 @@ namespace Redatech.Service.UsuarioService
             }
 
             return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<List<UsuarioDto>>> GetAlunosByName(string nomeParcial)
+        {
+            var serviceResponse = new ServiceResponse<List<UsuarioDto>>();
+
+            try
+            {
+                if (string.IsNullOrEmpty(nomeParcial))
+                {
+                    serviceResponse.Sucesso = false;
+                    serviceResponse.Mensagem = "Informe um nome para buscar.";
+                    return serviceResponse;
+                }
+
+                var usuarios = await _context.Usuarios
+                    .Where(u => u.Nome.StartsWith(nomeParcial) && u.TipoUsuario == TipoUsuario.Aluno)
+                    .ToListAsync();
+
+                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(usuarios);
+                serviceResponse.Sucesso = true;
+                serviceResponse.Mensagem = "Usuários do tipo Aluno encontrados com sucesso!";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Erro: {ex.Message}";
+            }
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<UsuarioDto>> InativarAluno(int id)
+        {
+            ServiceResponse<UsuarioDto> serviceResponse = new ServiceResponse<UsuarioDto>();
+
+            UsuarioModel usuario = await _context.Usuarios.FirstOrDefaultAsync(x => x.Id == id);
+            
+            if (usuario == null)
+            {
+                serviceResponse.Dados = null;
+                serviceResponse.Mensagem = "Usuário não encontrado.";
+                serviceResponse.Sucesso = false;
+                return serviceResponse;
+            }
+            usuario.Status = false; // Desativa o usuário
+
+            _context.Usuarios.Update(usuario); // Atualiza o usuário no contexto
+            await _context.SaveChangesAsync();
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<UsuarioDto>> AtivarAluno(int id)
+        {
+            ServiceResponse<UsuarioDto> serviceResponse = new ServiceResponse<UsuarioDto>();
+
+            UsuarioModel usuario = await _context.Usuarios.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (usuario == null)
+            {
+                serviceResponse.Dados = null;
+                serviceResponse.Mensagem = "Usuário não encontrado.";
+                serviceResponse.Sucesso = false;
+                return serviceResponse;
+            }
+
+            usuario.Status = true;
+
+            _context.Usuarios.Update(usuario);
+            await _context.SaveChangesAsync();
+
+            serviceResponse.Dados = _mapper.Map<UsuarioDto>(usuario);
+            serviceResponse.Sucesso = true;
+            serviceResponse.Mensagem = "Status atualizado com sucesso!";
+
+            return serviceResponse;
+        }
+
+        private bool ValidaCpf(UsuarioModel novoUsuarioModel)
+        {
+            // Implementar a lógica de validação de CPF aqui, se necessário.
+            // Por enquanto, não há implementação específica para validação de CPF.
+
+            var usuarioEncontradoNoBanco = _context.Usuarios.FirstOrDefault(x => x.Cpf == novoUsuarioModel.Cpf);
+
+            if(usuarioEncontradoNoBanco != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool ValidaEmail(UsuarioModel novoUsuarioModel)
+        {
+            var usuarioEncontradoNoBanco = _context.Usuarios.FirstOrDefault(x => x.Email == novoUsuarioModel.Email);
+            if (usuarioEncontradoNoBanco != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<ServiceResponse<int>> ObterIdDoUsuarioLogado()
+        {
+            var response = new ServiceResponse<int>();
+
+            try
+            {
+                var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                response.Dados = userId;
+            }
+            catch (Exception)
+            {
+                response.Sucesso = false;
+                response.Mensagem = "Não foi possível obter o ID do usuário logado.";
+            }
+
+            return response;
         }
     }
 }

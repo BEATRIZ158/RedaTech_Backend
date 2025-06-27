@@ -66,9 +66,9 @@ namespace Redatech.Controllers
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [Authorize]
         [HttpPut]
-        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> UpdateUsuario(UsuarioDto editadoUsuario)
+        public async Task<ActionResult<ServiceResponse<UsuarioDto>>> UpdateUsuario(UsuarioDto editadoUsuario)
         {
-            ServiceResponse<List<UsuarioDto>> serviceResponse = await _usuarioInterface.UpdateUsuario(editadoUsuario);
+            ServiceResponse<UsuarioDto> serviceResponse = await _usuarioInterface.UpdateUsuario(editadoUsuario);
             return Ok(serviceResponse);
         }
 
@@ -78,7 +78,7 @@ namespace Redatech.Controllers
         /// <param name="id">Id do Usuário</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [Authorize(Roles = "Professor")]
-        [HttpPut("{id}")]
+        [HttpPut("inativaUsuario/{id}")]
         public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> InativaUsuario(int id)
         {
             ServiceResponse<List<UsuarioDto>> serviceResponse = await _usuarioInterface.InativaUsuario(id);
@@ -113,6 +113,46 @@ namespace Redatech.Controllers
                 return BadRequest(resposta.Mensagem);
 
             return Ok(resposta);
+        }
+
+        /// <summary>
+        /// Buscar usuários alunos por caractere
+        /// </summary>
+        /// <param name="nomeParcial">Nome parcial do usuário.</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
+        [Authorize(Roles = "Professor")]
+        [HttpGet("buscar-alunos-por-nome/{nomeParcial}")]
+        public async Task<IActionResult> BuscarAlunosPorNome(string nomeParcial)
+        {
+            var resposta = await _usuarioInterface.GetAlunosByName(nomeParcial);
+
+            if (!resposta.Sucesso)
+                return BadRequest(resposta.Mensagem);
+
+            return Ok(resposta);
+        }
+
+        [Authorize(Roles = "Professor")]
+        [HttpPut("inativar-aluno/{id}")]
+        public async Task<ActionResult<ServiceResponse<UsuarioDto>>> InativarAluno(int id)
+        {
+            ServiceResponse<UsuarioDto> serviceResponse = await _usuarioInterface.InativarAluno(id);
+            return Ok(serviceResponse);
+        }
+
+        [Authorize(Roles = "Professor")]
+        [HttpPut("ativar-aluno/{id}")]
+        public async Task<ActionResult<ServiceResponse<UsuarioDto>>> AtivarAluno(int id)
+        {
+            ServiceResponse<UsuarioDto> serviceResponse = await _usuarioInterface.AtivarAluno(id);
+            return Ok(serviceResponse);
+        }
+
+        [Authorize]
+        [HttpGet("obter-id-logado")]
+        public async Task<ActionResult<ServiceResponse<int>>> ObterIdUsuarioLogado()
+        {
+            return await _usuarioInterface.ObterIdDoUsuarioLogado();
         }
     }
 }

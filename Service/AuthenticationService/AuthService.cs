@@ -27,20 +27,84 @@ namespace Redatech.Service.AuthenticationService
             _mapper = mapper;
         }
 
-        public Task<ServiceResponse<AuthResponseDto>> GerarNovoTokenDepoisDeExpirar(RefreshTokenDto refreshToken)
+        public async Task<ServiceResponse<AuthResponseDto>> GerarNovoTokenDepoisDeExpirar(RefreshTokenDto refreshTokenDto)
         {
             var serviceResponse = new ServiceResponse<AuthResponseDto>();
 
-            //Gerando novo Token
-            var dadosUsuario = new AuthResponseDto
+            try
             {
-                Nome = usuario.Nome,
-                Role = usuario.TipoUsuario.ToString(),
-                Token = _tokenProvider.GerarToken(usuarioLogado),
-                RefreshToken = refreshToken.Token,
-                DataCriacao = refreshToken.DataCriacao,
-                DataExpiracao = refreshToken.DataExpiracao
-            };
+                // 🔍 Busca o refresh token no banco
+                var refreshTokenModel = await _context.RefreshTokens
+                    .FirstOrDefaultAsync(x => x.Token == refreshTokenDto.Token);
+
+                if (refreshTokenModel == null)
+                {
+                    serviceResponse.Sucesso = false;
+                    serviceResponse.Mensagem = "Refresh Token inválido!";
+                    return serviceResponse;
+                }
+
+                // ⌛ Verifica se o refresh token está expirado
+                if (refreshTokenModel.DataExpiracao < DateTime.UtcNow)
+                {
+                    serviceResponse.Sucesso = false;
+                    serviceResponse.Mensagem = "Refresh Token expirado!";
+                    return serviceResponse;
+                }
+
+                // 👤 Busca o usuário
+                var usuario = await _context.Usuarios
+                    .FirstOrDefaultAsync(u => u.Id == refreshTokenModel.UsuarioId);
+
+                if (usuario == null)
+                {
+                    serviceResponse.Sucesso = false;
+                    serviceResponse.Mensagem = "Usuário não encontrado!";
+                    return serviceResponse;
+                }
+
+                // 🔐 Gera novo Access Token (JWT)
+                var usuarioLogado = new UsuarioLogadoDto
+                {
+                    Id = usuario.Id,
+                    Nome = usuario.Nome,
+                    Email = usuario.Email,
+                    TipoUsuario = usuario.TipoUsuario
+                };
+
+                var novoToken = _tokenProvider.GerarToken(usuarioLogado);
+
+                // ♻️ Gera novo Refresh Token
+                var novoRefreshToken = _tokenProvider.GerarRefreshToken();
+
+                // 💾 Atualiza o Refresh Token no banco
+                refreshTokenModel.Token = novoRefreshToken.Token;
+                refreshTokenModel.DataCriacao = novoRefreshToken.DataCriacao;
+                refreshTokenModel.DataExpiracao = novoRefreshToken.DataExpiracao;
+
+                _context.RefreshTokens.Update(refreshTokenModel);
+                await _context.SaveChangesAsync();
+
+                // 📦 Monta a resposta
+                var authResponse = new AuthResponseDto
+                {
+                    Nome = usuario.Nome,
+                    Role = usuario.TipoUsuario.ToString(),
+                    Token = novoToken,
+                    RefreshToken = novoRefreshToken.Token,
+                    DataCriacao = novoRefreshToken.DataCriacao,
+                    DataExpiracao = novoRefreshToken.DataExpiracao
+                };
+
+                serviceResponse.Dados = authResponse;
+                serviceResponse.Sucesso = true;
+                serviceResponse.Mensagem = "Novo token gerado com sucesso!";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Sucesso = false;
+                serviceResponse.Mensagem = $"Ocorreu um erro ao gerar novo token: {ex.Message}";
+            }
 
             return serviceResponse;
         }
