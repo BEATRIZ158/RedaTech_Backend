@@ -11,7 +11,6 @@ namespace Redatech.Models
         public DateTime DataDeEnvio { get; set; } = DateTime.Now.ToLocalTime();
         public int AlunoId { get; set; }
 
-        //Propriedade de navegação para UsuarioModel
         [ForeignKey("AlunoId")]
         public UsuarioModel Aluno { get; set; }
         public string Descricao { get; set; }

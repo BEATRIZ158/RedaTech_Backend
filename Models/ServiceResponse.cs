@@ -1,6 +1,5 @@
 ﻿namespace Redatech.Models
 {
-    //T a classe pode receber qualquer tipo de objeto
     public class ServiceResponse<T>
     {
         public T? Dados { get; set; }
