@@ -17,7 +17,7 @@ namespace Redatech.Service.CorrecaoService
             _mapper = mapper;
         }
 
-        public async Task<ServiceResponse<List<CorrecaoDto>>> CreateCorrecao(CorrecaoDto novaCorrecaoDto)
+        public async Task<ServiceResponse<List<CorrecaoDto>>> CreateCorrection(CorrecaoDto novaCorrecaoDto)
         {
             ServiceResponse<List<CorrecaoDto>> serviceResponse = new ServiceResponse<List<CorrecaoDto>>();
 
@@ -52,7 +52,7 @@ namespace Redatech.Service.CorrecaoService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<CorrecaoDto>>> DeleteCorrecao(int id)
+        public async Task<ServiceResponse<List<CorrecaoDto>>> DeleteCorrection(int id)
         {
             ServiceResponse<List<CorrecaoDto>> serviceResponse = new ServiceResponse<List<CorrecaoDto>>();
 
@@ -85,7 +85,7 @@ namespace Redatech.Service.CorrecaoService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<CorrecaoDto>> GetCorrecaoById(int id)
+        public async Task<ServiceResponse<CorrecaoDto>> GetCorrectionById(int id)
         {
             ServiceResponse<CorrecaoDto> serviceResponse = new ServiceResponse<CorrecaoDto>();
 
@@ -115,7 +115,7 @@ namespace Redatech.Service.CorrecaoService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<CorrecaoDto>>> GetCorrecoes()
+        public async Task<ServiceResponse<List<CorrecaoDto>>> GetCorrections()
         {
             ServiceResponse<List<CorrecaoDto>> serviceResponse = new ServiceResponse<List<CorrecaoDto>>();
 
@@ -137,7 +137,7 @@ namespace Redatech.Service.CorrecaoService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<CorrecaoDto>>> UpdateCorrecao(CorrecaoDto editadoCorrecaoDto)
+        public async Task<ServiceResponse<List<CorrecaoDto>>> UpdateCorrection(CorrecaoDto editadoCorrecaoDto)
         {
             ServiceResponse<List<CorrecaoDto>> serviceResponse = new ServiceResponse<List<CorrecaoDto>>();
 

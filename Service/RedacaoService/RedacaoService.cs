@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Redatech.DataContext;
 using Redatech.Dto;
@@ -19,7 +18,7 @@ namespace Redatech.Service.RedacaoService
             _mapper = mapper;
         }
 
-        public async Task<ServiceResponse<List<RedacaoDto>>> CreateRedacao(RedacaoDto novaRedacaoDto)
+        public async Task<ServiceResponse<List<RedacaoDto>>> CreateEssay(RedacaoDto novaRedacaoDto)
         {
             var response = new ServiceResponse<List<RedacaoDto>>();
 
@@ -49,7 +48,7 @@ namespace Redatech.Service.RedacaoService
             return response;
         }
 
-        public async Task<ServiceResponse<List<RedacaoDto>>> DeleteRedacao(int id)
+        public async Task<ServiceResponse<List<RedacaoDto>>> DeleteEssay(int id)
         {
             ServiceResponse<List<RedacaoDto>> serviceResponse = new ServiceResponse<List<RedacaoDto>>();
 
@@ -73,10 +72,8 @@ namespace Redatech.Service.RedacaoService
                 if (!string.IsNullOrEmpty(redacao.CaminhoArquivo))
                 {
                     var caminhoArquivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", redacao.CaminhoArquivo);
-                    if (System.IO.File.Exists(caminhoArquivo))
-                    {
-                        System.IO.File.Delete(caminhoArquivo);
-                    }
+                    if (File.Exists(caminhoArquivo))
+                        File.Delete(caminhoArquivo);
                 }
 
                 List<RedacaoModel> redacoes = await _context.Redacoes.ToListAsync();
@@ -92,7 +89,7 @@ namespace Redatech.Service.RedacaoService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<RedacaoDto>> GetRedacaoById(int id)
+        public async Task<ServiceResponse<RedacaoDto>> GetEssayById(int id)
         {
             ServiceResponse<RedacaoDto> serviceResponse = new ServiceResponse<RedacaoDto>();
 
@@ -122,7 +119,7 @@ namespace Redatech.Service.RedacaoService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<RedacaoDto>>> GetRedacoes()
+        public async Task<ServiceResponse<List<RedacaoDto>>> GetEssays()
         {
             ServiceResponse<List<RedacaoDto>> serviceResponse = new ServiceResponse<List<RedacaoDto>>();
 
@@ -143,7 +140,7 @@ namespace Redatech.Service.RedacaoService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<RedacaoDto>> UpdateRedacaoAsync(RedacaoDto redacaoAtualizada, IFormFile? novoArquivo)
+        public async Task<ServiceResponse<RedacaoDto>> UpdateEssayAsync(RedacaoDto redacaoAtualizada, IFormFile? novoArquivo)
         {
             var response = new ServiceResponse<RedacaoDto>();
 
@@ -168,9 +165,9 @@ namespace Redatech.Service.RedacaoService
                     if (!string.IsNullOrEmpty(redacaoExistente.CaminhoArquivo))
                     {
                         var caminhoArquivoAntigo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", redacaoExistente.CaminhoArquivo);
-                        if (System.IO.File.Exists(caminhoArquivoAntigo))
+                        if (File.Exists(caminhoArquivoAntigo))
                         {
-                            System.IO.File.Delete(caminhoArquivoAntigo);
+                            File.Delete(caminhoArquivoAntigo);
                         }
                     }
 
@@ -208,7 +205,7 @@ namespace Redatech.Service.RedacaoService
             return response;
         }
 
-        public async Task<ServiceResponse<string>> UploadArquivoRedacao(IFormFile arquivo)
+        public async Task<ServiceResponse<string>> UploadFileEssay(IFormFile arquivo)
         {
             var response = new ServiceResponse<string>();
 
@@ -249,7 +246,7 @@ namespace Redatech.Service.RedacaoService
         }
 
         //Editar depois, lista pelos caracteres passados
-        public async Task<ServiceResponse<List<RedacaoDto>>> GetRedacoesByName(string nome)
+        public async Task<ServiceResponse<List<RedacaoDto>>> GetEssaysByName(string nome)
         {
             ServiceResponse<List<RedacaoDto>> serviceResponse = new ServiceResponse<List<RedacaoDto>>();
 

@@ -26,7 +26,7 @@ namespace Redatech.Controllers
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> GetUsuarios()
         {
-            var response = await _turmaInterface.GetTurmas();
+            var response = await _turmaInterface.GetClasses();
             return Ok(response);
         }
 
@@ -36,9 +36,9 @@ namespace Redatech.Controllers
         /// <param name="id">Passa o id da turma a ser buscada</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ServiceResponse<TurmaDto>>> GetTurmaById(int id)
+        public async Task<ActionResult<ServiceResponse<TurmaDto>>> GetClassById(int id)
         {
-            var response = await _turmaInterface.GetTurmaById(id);
+            var response = await _turmaInterface.GetClassById(id);
             return Ok(response);
         }
 
@@ -50,7 +50,7 @@ namespace Redatech.Controllers
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> CreateTurma(TurmaDto novaTurmaDto)
         {
-            return Ok(await _turmaInterface.CreateTurma(novaTurmaDto));
+            return Ok(await _turmaInterface.CreateClass(novaTurmaDto));
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace Redatech.Controllers
         /// <param name="editadoTurmaDto">Passa os dados atualizados da turma</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPut]
-        public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> UpdateTurma(TurmaDto editadoTurmaDto)
+        public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> UpdateClass(TurmaDto editadoTurmaDto)
         {
-            ServiceResponse<List<TurmaDto>> serviceResponse = await _turmaInterface.UpdateTurma(editadoTurmaDto);
+            ServiceResponse<List<TurmaDto>> serviceResponse = await _turmaInterface.UpdateClass(editadoTurmaDto);
             return Ok(serviceResponse);
         }
 
@@ -71,9 +71,9 @@ namespace Redatech.Controllers
         /// <param name="id">Passa o id da turma a ser ativada/inativada</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPut("{id}")]
-        public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> InativaTurma(int id)
+        public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> InactiveClass(int id)
         {
-            ServiceResponse<List<TurmaDto>> serviceResponse = await _turmaInterface.InativaTurma(id);
+            ServiceResponse<List<TurmaDto>> serviceResponse = await _turmaInterface.InactiveClass(id);
             return Ok(serviceResponse);
         }
 
@@ -83,9 +83,9 @@ namespace Redatech.Controllers
         /// <param name="id">Passa o id da turma.</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> DeleteTurma(int id)
+        public async Task<ActionResult<ServiceResponse<List<TurmaDto>>>> DeleteClass(int id)
         {
-            ServiceResponse<List<TurmaDto>> serviceResponse = await _turmaInterface.DeleteTurma(id);
+            ServiceResponse<List<TurmaDto>> serviceResponse = await _turmaInterface.DeleteClass(id);
             return Ok(serviceResponse);
         }
 
@@ -96,11 +96,11 @@ namespace Redatech.Controllers
         /// <param name="alunoId">Passa o id do aluno.</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpDelete("remover-aluno")]
-        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> RemoverUsuarioDaTurma(
+        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> RemoveStudentToClass(
             [FromQuery] int turmaId,
             [FromQuery] int alunoId)
         {
-            var response = await _turmaInterface.RemoverAlunoDaTurma(turmaId, alunoId);
+            var response = await _turmaInterface.RemoveStudentToClass(turmaId, alunoId);
             return Ok(response);
         }
 
@@ -111,11 +111,11 @@ namespace Redatech.Controllers
         /// <param name="alunoId">Passa o id do aluno.</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPost("adicionar-aluno")]
-        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> AdicionarAlunoNaTurma(
+        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> AddStudentToClass(
             [FromQuery] int turmaId,
             [FromQuery] int alunoId)
         {
-            var resposta = await _turmaInterface.AdicionarAlunoNaTurma(turmaId, alunoId);
+            var resposta = await _turmaInterface.AddStudentToClass(turmaId, alunoId);
             return Ok(resposta);
         }
 
@@ -125,9 +125,9 @@ namespace Redatech.Controllers
         /// <param name="turmaId">Passa o id da turma.</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet("ListarAlunosDaTurma/{turmaId}")]
-        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> ListarAlunosDaTurma(int turmaId)
+        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> ListStudentsToClass(int turmaId)
         {
-            var response = await _turmaInterface.ListarAlunosDaTurma(turmaId);
+            var response = await _turmaInterface.ListStudentsToClass(turmaId);
             return Ok(response);
         }
 
@@ -137,9 +137,9 @@ namespace Redatech.Controllers
         /// <param name="nomeTurmaParcial">Nome parcial da turma.</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet("buscar-por-nome/{nomeTurmaParcial}")]
-        public async Task<IActionResult> BuscarTurmasPorNome(string nomeTurmaParcial)
+        public async Task<IActionResult> GetClassesByName(string nomeTurmaParcial)
         {
-            var resposta = await _turmaInterface.GetTurmasByName(nomeTurmaParcial);
+            var resposta = await _turmaInterface.GetClassesByName(nomeTurmaParcial);
 
             if (!resposta.Sucesso)
                 return BadRequest(resposta.Mensagem);

@@ -23,9 +23,9 @@ namespace Redatech.Controllers
         /// <param name="">Não precisa passar nenhum valor</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> GetUsuarios()
+        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> GetUsers()
         {
-            var response = await _usuarioInterface.GetUsuarios();
+            var response = await _usuarioInterface.GetUsers();
             return Ok(response);
         }
 
@@ -35,10 +35,10 @@ namespace Redatech.Controllers
         /// <param name="id">Id do usuário que está sendo buscado</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ServiceResponse<UsuarioDto>>> GetUsuarioById(int id)
+        public async Task<ActionResult<ServiceResponse<UsuarioDto>>> GetUserById(int id)
         {
             // Chama o Service para buscar o usuário
-            var response = await _usuarioInterface.GetUsuarioById(id);
+            var response = await _usuarioInterface.GetUserById(id);
 
             // Retorna o response do Service
             return Ok(response);
@@ -50,9 +50,9 @@ namespace Redatech.Controllers
         /// <param name="novoUsuario">Dados do novo usuário</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPost]
-        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> CreateUsuario(UsuarioDto novoUsuario)
+        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> CreateUser(UsuarioDto novoUsuario)
         {
-            return Ok(await _usuarioInterface.CreateUsuario(novoUsuario));
+            return Ok(await _usuarioInterface.CreateUser(novoUsuario));
         }
 
         /// <summary>
@@ -61,9 +61,9 @@ namespace Redatech.Controllers
         /// <param name="editadoUsuario">Dados do usuário atualizados</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPut]
-        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> UpdateUsuario(UsuarioDto editadoUsuario)
+        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> UpdateUser(UsuarioDto editadoUsuario)
         {
-            ServiceResponse<List<UsuarioDto>> serviceResponse = await _usuarioInterface.UpdateUsuario(editadoUsuario);
+            ServiceResponse<List<UsuarioDto>> serviceResponse = await _usuarioInterface.UpdateUser(editadoUsuario);
             return Ok(serviceResponse);
         }
 
@@ -73,9 +73,9 @@ namespace Redatech.Controllers
         /// <param name="id">Id do Usuário</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPut("{id}")]
-        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> InativaUsuario(int id)
+        public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> InactiveUser(int id)
         {
-            ServiceResponse<List<UsuarioDto>> serviceResponse = await _usuarioInterface.InativaUsuario(id);
+            ServiceResponse<List<UsuarioDto>> serviceResponse = await _usuarioInterface.InactiveUser(id);
             return Ok(serviceResponse);
         }
 
@@ -87,7 +87,7 @@ namespace Redatech.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<ServiceResponse<List<UsuarioDto>>>> DeleteUsuario(int id)
         {
-            ServiceResponse<List<UsuarioDto>> serviceResponse = await _usuarioInterface.DeleteUsuario(id);
+            ServiceResponse<List<UsuarioDto>> serviceResponse = await _usuarioInterface.DeleteUser(id);
             return Ok(serviceResponse);
         }
 
@@ -99,7 +99,7 @@ namespace Redatech.Controllers
         [HttpGet("buscar-por-nome/{nomeParcial}")]
         public async Task<IActionResult> BuscarUsuariosPorNome(string nomeParcial)
         {
-            var resposta = await _usuarioInterface.GetUsuariosByName(nomeParcial);
+            var resposta = await _usuarioInterface.GetUserByName(nomeParcial);
 
             if (!resposta.Sucesso)
                 return BadRequest(resposta.Mensagem);

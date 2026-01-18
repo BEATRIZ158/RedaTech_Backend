@@ -8,6 +8,6 @@ namespace Redatech.Enums
     {
         EmAndamento = 1,
         Concluida = 2,
-        Revisao = 3
+        EmRevisao = 3
     }
 }

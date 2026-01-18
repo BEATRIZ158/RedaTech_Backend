@@ -23,9 +23,9 @@ namespace Redatech.Controllers
         /// <param name="">Nenhum parametro é necessário</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<CorrecaoDto>>>> GetCorrecoes()
+        public async Task<ActionResult<ServiceResponse<List<CorrecaoDto>>>> GetCorrections()
         {
-            var response = await _correcaoInterface.GetCorrecoes();
+            var response = await _correcaoInterface.GetCorrections();
             return Ok(response);
         }
 
@@ -35,9 +35,9 @@ namespace Redatech.Controllers
         /// <param name="id">Passa o id da correção</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ServiceResponse<CorrecaoDto>>> GetCorrecaoById(int id)
+        public async Task<ActionResult<ServiceResponse<CorrecaoDto>>> GetCorrectionById(int id)
         {
-            var response = await _correcaoInterface.GetCorrecaoById(id);
+            var response = await _correcaoInterface.GetCorrectionById(id);
             return Ok(response);
         }
 
@@ -47,9 +47,9 @@ namespace Redatech.Controllers
         /// <param name="novaCorrecao">Passa os dados da nova correção</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPost]
-        public async Task<ActionResult<ServiceResponse<List<CorrecaoDto>>>> CreateCorrecao(CorrecaoDto novaCorrecao)
+        public async Task<ActionResult<ServiceResponse<List<CorrecaoDto>>>> CreateCorrection(CorrecaoDto novaCorrecao)
         {
-            return Ok(await _correcaoInterface.CreateCorrecao(novaCorrecao));
+            return Ok(await _correcaoInterface.CreateCorrection(novaCorrecao));
         }
 
         /// <summary>
@@ -58,9 +58,9 @@ namespace Redatech.Controllers
         /// <param name="editadoCorrecao">Passa os dados atualizados da correção escolhida</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPut]
-        public async Task<ActionResult<ServiceResponse<List<CorrecaoDto>>>> UpdateCorrecao(CorrecaoDto editadoCorrecao)
+        public async Task<ActionResult<ServiceResponse<List<CorrecaoDto>>>> UpdateCorrection(CorrecaoDto editadoCorrecao)
         {
-            ServiceResponse<List<CorrecaoDto>> serviceResponse = await _correcaoInterface.UpdateCorrecao(editadoCorrecao);
+            ServiceResponse<List<CorrecaoDto>> serviceResponse = await _correcaoInterface.UpdateCorrection(editadoCorrecao);
             return Ok(serviceResponse);
         }
 
@@ -70,9 +70,9 @@ namespace Redatech.Controllers
         /// <param name="id">Passa o id da correção a ser deletada</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ServiceResponse<List<CorrecaoDto>>>> DeleteCorrecao(int id)
+        public async Task<ActionResult<ServiceResponse<List<CorrecaoDto>>>> DeleteCorrection(int id)
         {
-            ServiceResponse<List<CorrecaoDto>> serviceResponse = await _correcaoInterface.DeleteCorrecao(id);
+            ServiceResponse<List<CorrecaoDto>> serviceResponse = await _correcaoInterface.DeleteCorrection(id);
             return Ok(serviceResponse);
         }
     }

@@ -17,7 +17,7 @@ namespace Redatech.Service.TurmaService
             _mapper = mapper; // Agora o AutoMapper pode ser usado no Service
         }
 
-        public async Task<ServiceResponse<List<TurmaDto>>> CreateTurma(TurmaDto novaTurmaDto)
+        public async Task<ServiceResponse<List<TurmaDto>>> CreateClass(TurmaDto novaTurmaDto)
         {
             ServiceResponse<List<TurmaDto>> serviceResponse = new ServiceResponse<List<TurmaDto>>();
 
@@ -52,9 +52,8 @@ namespace Redatech.Service.TurmaService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<TurmaDto>>> DeleteTurma(int id)
+        public async Task<ServiceResponse<List<TurmaDto>>> DeleteClass(int id)
         {
-
             ServiceResponse<List<TurmaDto>> serviceResponse = new ServiceResponse<List<TurmaDto>>();
 
             try
@@ -86,7 +85,7 @@ namespace Redatech.Service.TurmaService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<TurmaDto>> GetTurmaById(int id)
+        public async Task<ServiceResponse<TurmaDto>> GetClassById(int id)
         {
             ServiceResponse<TurmaDto> serviceResponse = new ServiceResponse<TurmaDto>();
 
@@ -116,7 +115,7 @@ namespace Redatech.Service.TurmaService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<TurmaDto>>> GetTurmas()
+        public async Task<ServiceResponse<List<TurmaDto>>> GetClasses()
         {
             ServiceResponse<List<TurmaDto>> serviceResponse = new ServiceResponse<List<TurmaDto>>();
 
@@ -138,7 +137,7 @@ namespace Redatech.Service.TurmaService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<TurmaDto>>> InativaTurma(int id)
+        public async Task<ServiceResponse<List<TurmaDto>>> InactiveClass(int id)
         {
             ServiceResponse<List<TurmaDto>> serviceResponse = new ServiceResponse<List<TurmaDto>>();
 
@@ -173,7 +172,7 @@ namespace Redatech.Service.TurmaService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<TurmaDto>>> UpdateTurma(TurmaDto editadoTurmaDto)
+        public async Task<ServiceResponse<List<TurmaDto>>> UpdateClass(TurmaDto editadoTurmaDto)
         {
             ServiceResponse<List<TurmaDto>> serviceResponse = new ServiceResponse<List<TurmaDto>>();
 
@@ -210,7 +209,7 @@ namespace Redatech.Service.TurmaService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<string>> AdicionarAlunoNaTurma(int turmaId, int alunoId)
+        public async Task<ServiceResponse<string>> AddStudentToClass(int turmaId, int alunoId)
         {
             var response = new ServiceResponse<string>();
 
@@ -264,7 +263,7 @@ namespace Redatech.Service.TurmaService
             return response;
         }
 
-        public async Task<ServiceResponse<string>> RemoverAlunoDaTurma(int turmaId, int alunoId)
+        public async Task<ServiceResponse<string>> RemoveStudentToClass(int turmaId, int alunoId)
         {
             var response = new ServiceResponse<string>();
 
@@ -311,7 +310,7 @@ namespace Redatech.Service.TurmaService
             return response;
         }
 
-        public async Task<ServiceResponse<List<UsuarioDto>>> ListarAlunosDaTurma(int turmaId)
+        public async Task<ServiceResponse<List<UsuarioDto>>> ListStudentsToClass(int turmaId)
         {
             var response = new ServiceResponse<List<UsuarioDto>>();
 
@@ -348,7 +347,7 @@ namespace Redatech.Service.TurmaService
             return response;
         }
 
-        public async Task<ServiceResponse<List<TurmaDto>>> GetTurmasByName(string nomeTurmaParcial)
+        public async Task<ServiceResponse<List<TurmaDto>>> GetClassesByName(string nomeTurmaParcial)
         {
             var serviceResponse = new ServiceResponse<List<TurmaDto>>();
 

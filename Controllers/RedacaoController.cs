@@ -23,9 +23,9 @@ namespace Redatech.Controllers
         /// <param name="">Nenhum parametro é necessário</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<RedacaoDto>>>> GetRedacoes()
+        public async Task<ActionResult<ServiceResponse<List<RedacaoDto>>>> GetEssays()
         {
-            var response = await _redacaoInterface.GetRedacoes();
+            var response = await _redacaoInterface.GetEssays();
             return Ok(response);
         }
 
@@ -35,9 +35,9 @@ namespace Redatech.Controllers
         /// <param name="id">Id da redação que está sendo buscada</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ServiceResponse<RedacaoDto>>> GetRedacaoById(int id)
+        public async Task<ActionResult<ServiceResponse<RedacaoDto>>> GetEssayById(int id)
         {
-            var response = await _redacaoInterface.GetRedacaoById(id);
+            var response = await _redacaoInterface.GetEssayById(id);
 
             return Ok(response);
         }
@@ -48,10 +48,10 @@ namespace Redatech.Controllers
         /// <param name="redacaoDto">Passar os dados atualizados da Redação</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpPut("atualizar")]
-        public async Task<ActionResult<ServiceResponse<RedacaoDto>>> UpdateRedacao(
+        public async Task<ActionResult<ServiceResponse<RedacaoDto>>> UpdateEssay(
             [FromForm] RedacaoDto redacaoDto, IFormFile? novoArquivo)
         {
-            var resposta = await _redacaoInterface.UpdateRedacaoAsync(redacaoDto, novoArquivo);
+            var resposta = await _redacaoInterface.UpdateEssayAsync(redacaoDto, novoArquivo);
             return Ok(resposta);
         }
 
@@ -61,9 +61,9 @@ namespace Redatech.Controllers
         /// <param name="id">Passar o id da Redação</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ServiceResponse<List<RedacaoDto>>>> DeleteRedacao(int id)
+        public async Task<ActionResult<ServiceResponse<List<RedacaoDto>>>> DeleteEssay(int id)
         {
-            ServiceResponse<List<RedacaoDto>> serviceResponse = await _redacaoInterface.DeleteRedacao(id);
+            ServiceResponse<List<RedacaoDto>> serviceResponse = await _redacaoInterface.DeleteEssay(id);
             return Ok(serviceResponse);
         }
 
@@ -76,14 +76,14 @@ namespace Redatech.Controllers
         [HttpPost("enviar-redacao")]
         public async Task<IActionResult> EnviarRedacao([FromForm] RedacaoDto redacaoDto, IFormFile arquivo)
         {
-            var uploadResponse = await _redacaoInterface.UploadArquivoRedacao(arquivo);
+            var uploadResponse = await _redacaoInterface.UploadFileEssay(arquivo);
 
             if (!uploadResponse.Sucesso)
                 return BadRequest(uploadResponse.Mensagem);
 
             redacaoDto.CaminhoArquivo = uploadResponse.Dados;
 
-            var createResponse = await _redacaoInterface.CreateRedacao(redacaoDto);
+            var createResponse = await _redacaoInterface.CreateEssay(redacaoDto);
 
             if (!createResponse.Sucesso)
                 return BadRequest(createResponse.Mensagem);

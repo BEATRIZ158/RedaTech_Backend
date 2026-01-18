@@ -29,7 +29,7 @@ namespace Redatech.Service.UsuarioService
             _mapper = mapper; // Agora o AutoMapper pode ser usado no Service
         }
 
-        public async Task<ServiceResponse<List<UsuarioDto>>> CreateUsuario(UsuarioDto novoUsuarioDto)
+        public async Task<ServiceResponse<List<UsuarioDto>>> CreateUser(UsuarioDto novoUsuarioDto)
         {
             ServiceResponse<List<UsuarioDto>> serviceResponse = new ServiceResponse<List<UsuarioDto>>();
 
@@ -69,7 +69,7 @@ namespace Redatech.Service.UsuarioService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<UsuarioDto>>> DeleteUsuario(int id)
+        public async Task<ServiceResponse<List<UsuarioDto>>> DeleteUser(int id)
         {
             ServiceResponse<List<UsuarioDto>> serviceResponse = new ServiceResponse<List<UsuarioDto>>();
 
@@ -102,7 +102,7 @@ namespace Redatech.Service.UsuarioService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<UsuarioDto>> GetUsuarioById(int id)
+        public async Task<ServiceResponse<UsuarioDto>> GetUserById(int id)
         {
             ServiceResponse<UsuarioDto> serviceResponse = new ServiceResponse<UsuarioDto>();
 
@@ -137,7 +137,7 @@ namespace Redatech.Service.UsuarioService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<UsuarioDto>>> GetUsuarios()
+        public async Task<ServiceResponse<List<UsuarioDto>>> GetUsers()
         {
             ServiceResponse<List<UsuarioDto>> serviceResponse = new ServiceResponse<List<UsuarioDto>>();
 
@@ -164,7 +164,7 @@ namespace Redatech.Service.UsuarioService
         }
 
         //O que tem dentro do ServiceResponse<> é o tipo que será retornado no return
-        public async Task<ServiceResponse<List<UsuarioDto>>> InativaUsuario(int id)
+        public async Task<ServiceResponse<List<UsuarioDto>>> InactiveUser(int id)
         {
             ServiceResponse<List<UsuarioDto>> serviceResponse = new ServiceResponse<List<UsuarioDto>>();
 
@@ -202,7 +202,7 @@ namespace Redatech.Service.UsuarioService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<UsuarioDto>>> UpdateUsuario(UsuarioDto editadoUsuarioDto)
+        public async Task<ServiceResponse<List<UsuarioDto>>> UpdateUser(UsuarioDto editadoUsuarioDto)
         {
             ServiceResponse<List<UsuarioDto>> serviceResponse = new ServiceResponse<List<UsuarioDto>>();
 
@@ -246,7 +246,7 @@ namespace Redatech.Service.UsuarioService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<UsuarioDto>>> GetUsuariosByName(string nomeParcial)
+        public async Task<ServiceResponse<List<UsuarioDto>>> GetUserByName(string nomeParcial)
         {
             var serviceResponse = new ServiceResponse<List<UsuarioDto>>();
 
