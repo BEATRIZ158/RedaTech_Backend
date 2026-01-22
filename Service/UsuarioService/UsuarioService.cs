@@ -1,13 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Redatech.DataContext;
 using Redatech.Dto;
 using Redatech.Estaticos.Login;
 using Redatech.Models;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Redatech.Service.UsuarioService
 {

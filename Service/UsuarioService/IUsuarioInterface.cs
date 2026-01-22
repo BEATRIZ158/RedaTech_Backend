@@ -9,7 +9,6 @@ namespace Redatech.Service.UsuarioService
         Task<ServiceResponse<List<UsuarioDto>>> CreateUser(UsuarioDto novoUsuario);
         Task<ServiceResponse<UsuarioDto>> GetUserById(int id);
         Task<ServiceResponse<List<UsuarioDto>>> UpdateUser(UsuarioDto editadoUsuario);
-        Task<ServiceResponse<List<UsuarioDto>>> InativaUsuario(int id);
         Task<ServiceResponse<List<UsuarioDto>>> InactiveUser(int id);
         Task<ServiceResponse<List<UsuarioDto>>> DeleteUser(int id);
         Task<ServiceResponse<List<UsuarioDto>>> GetUserByName(string nomeParcial);
