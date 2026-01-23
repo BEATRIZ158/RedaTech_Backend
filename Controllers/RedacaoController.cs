@@ -10,9 +10,9 @@ namespace Redatech.Controllers
     [ApiController]
     public class RedacaoController : ControllerBase
     {
-        private readonly IRedacaoInterface _redacaoInterface;
+        private readonly IEssayService _redacaoInterface;
 
-        public RedacaoController(IRedacaoInterface redacaoInterface)
+        public RedacaoController(IEssayService redacaoInterface)
         {
             _redacaoInterface = redacaoInterface;
         }

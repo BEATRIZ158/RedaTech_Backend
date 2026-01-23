@@ -3,7 +3,7 @@ using Redatech.Models;
 
 namespace Redatech.Service.UsuarioService
 {
-    public interface IUsuarioInterface
+    public interface IUserService
     {
         Task<ServiceResponse<List<UsuarioDto>>> GetUsers();
         Task<ServiceResponse<List<UsuarioDto>>> CreateUser(UsuarioDto novoUsuario);

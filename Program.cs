@@ -30,7 +30,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 //Quando eu fizer um inje��o de depend�ncia de IUsaurioInteface, estou querendo utilizar os m�todos do UsuarioService (L�gica)
-builder.Services.AddScoped<IUsuarioInterface, UsuarioService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

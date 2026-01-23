@@ -10,9 +10,9 @@ namespace Redatech.Controllers
     [ApiController]
     public class UsuarioController : ControllerBase
     {
-        private readonly IUsuarioInterface _usuarioInterface;
+        private readonly IUserService _usuarioInterface;
 
-        public UsuarioController(IUsuarioInterface usuarioInterface)
+        public UsuarioController(IUserService usuarioInterface)
         {
             _usuarioInterface = usuarioInterface;
         }

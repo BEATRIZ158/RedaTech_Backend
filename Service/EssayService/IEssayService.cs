@@ -3,7 +3,7 @@ using Redatech.Models;
 
 namespace Redatech.Service.RedacaoService
 {
-    public interface IRedacaoInterface
+    public interface IEssayService
     {
         Task<ServiceResponse<List<RedacaoDto>>> GetEssays();
         Task<ServiceResponse<List<RedacaoDto>>> CreateEssay(RedacaoDto novaRedacaoDto);

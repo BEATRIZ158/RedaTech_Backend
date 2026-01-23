@@ -10,10 +10,10 @@ namespace Redatech.Extensions
     {
         public static void RegisterServices(this IServiceCollection services)
         {
-            services.AddScoped<IUsuarioInterface, UsuarioService>();
-            services.AddScoped<IRedacaoInterface, RedacaoService>();
-            services.AddScoped<ITurmaInterface, TurmaService>();
-            services.AddScoped<ICorrecaoInterface, CorrecaoService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IEssayService, EssayService>();
+            services.AddScoped<IClassService, ClassService>();
+            services.AddScoped<ICorrectionService, CorrectionService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
         }
     }

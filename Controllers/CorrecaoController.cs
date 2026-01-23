@@ -10,9 +10,9 @@ namespace Redatech.Controllers
     [ApiController]
     public class CorrecaoController : ControllerBase
     {
-        private readonly ICorrecaoInterface _correcaoInterface;
+        private readonly ICorrectionService _correcaoInterface;
 
-        public CorrecaoController(ICorrecaoInterface correcaoInterface)
+        public CorrecaoController(ICorrectionService correcaoInterface)
         {
             _correcaoInterface = correcaoInterface;
         }

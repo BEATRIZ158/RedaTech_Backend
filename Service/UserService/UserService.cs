@@ -7,7 +7,7 @@ using Redatech.Models;
 
 namespace Redatech.Service.UsuarioService
 {
-    public class UsuarioService : IUsuarioInterface
+    public class UserService : IUserService
     {
 
         //Variável que armazenará a instância do ApplicationDbContext
@@ -19,7 +19,7 @@ namespace Redatech.Service.UsuarioService
         //Construtor da classe
         //Quando UsuarioService for criado, o contexto do banco será passado via injeção de dependência.
         //_context = context; armazena essa instância para ser usada nos métodos do serviço.
-        public UsuarioService(ApplicationDbContext context, IMapper mapper)
+        public UserService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper; // Agora o AutoMapper pode ser usado no Service
@@ -40,13 +40,13 @@ namespace Redatech.Service.UsuarioService
                 }
 
                 // Mapeia o DTO para a entidade que será salva no banco
-                User novoUsuario = _mapper.Map<User>(novoUsuarioDto);
-                novoUsuario.Status = true;
+                User newUser = _mapper.Map<User>(novoUsuarioDto);
+                newUser.IsActive = true;
 
-                novoUsuario.SenhaHash = CriptografiaHash.GerarHash(novoUsuarioDto.SenhaHash);
+                newUser.PasswordHash = CriptografiaHash.GerarHash(novoUsuarioDto.SenhaHash);
 
                 // Adiciona ao banco de dados
-                _context.Users.Add(novoUsuario);
+                _context.Users.Add(newUser);
                 await _context.SaveChangesAsync();
 
                 // Recupera todos os usuários já convertidos para DTO
@@ -71,9 +71,9 @@ namespace Redatech.Service.UsuarioService
 
             try
             {
-                User usuario = _context.Users.FirstOrDefault(x => x.Id == id);
+                User user = _context.Users.FirstOrDefault(user => user.Id == id);
 
-                if (usuario == null)
+                if (user == null)
                 {
                     serviceResponse.Dados = null;
                     serviceResponse.Mensagem = "Usuário não localizado";
@@ -82,7 +82,7 @@ namespace Redatech.Service.UsuarioService
                     return serviceResponse;
                 }
 
-                _context.Users.Remove(usuario);
+                _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
 
                 List<User> usuarios = await _context.Users.ToListAsync();
@@ -105,10 +105,10 @@ namespace Redatech.Service.UsuarioService
             try
             {
                 // Realiza a busca do usuário no banco
-                User usuario = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+                User user = await _context.Users.FirstOrDefaultAsync(user => user.Id == id);
 
                 // Caso não encontre o usuário, atribui a mensagem de erro
-                if (usuario == null)
+                if (user == null)
                 {
                     serviceResponse.Dados = null;
                     serviceResponse.Mensagem = "Usuário não localizado";
@@ -117,7 +117,7 @@ namespace Redatech.Service.UsuarioService
                 }
 
                 // Se o usuário for encontrado, mapeia para o DTO
-                serviceResponse.Dados = _mapper.Map<UsuarioDto>(usuario);
+                serviceResponse.Dados = _mapper.Map<UsuarioDto>(user);
 
                 // Sucesso
                 serviceResponse.Mensagem = "Usuário encontrado com sucesso";
@@ -140,10 +140,10 @@ namespace Redatech.Service.UsuarioService
             try
             {
                 // Obtém todos os usuários do banco
-                List<User> usuarios = await _context.Users.ToListAsync();
+                List<User> users = await _context.Users.ToListAsync();
 
                 // Converte a lista de UsuarioModel para UsuarioDto usando AutoMapper
-                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(usuarios);
+                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(users);
 
                 // Define a mensagem de sucesso
                 serviceResponse.Mensagem = "Lista de usuários obtida com sucesso";
@@ -166,9 +166,9 @@ namespace Redatech.Service.UsuarioService
 
             try
             {
-                User usuario = _context.Users.FirstOrDefault(x => x.Id == id);
+                User user = _context.Users.FirstOrDefault(user => user.Id == id);
 
-                if (usuario == null)
+                if (user == null)
                 {
                     serviceResponse.Dados = null;
                     serviceResponse.Mensagem = "Usuário não localizado";
@@ -178,16 +178,16 @@ namespace Redatech.Service.UsuarioService
                 }
 
                 // Alterna o status (ativo/inativo) de forma mais eficiente
-                usuario.Status = !usuario.Status;
+                user.IsActive = !user.IsActive;
 
                 /*Dentro da tabela de usuario, fazer um update no usuario definido */
-                _context.Users.Update(usuario);
+                _context.Users.Update(user);
 
                 /* Salvar a operação realizada */
                 await _context.SaveChangesAsync();
 
-                List<User> usuarios = await _context.Users.ToListAsync();
-                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(usuarios);
+                List<User> users = await _context.Users.ToListAsync();
+                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(users);
             }
             catch (Exception ex)
             {
@@ -205,11 +205,11 @@ namespace Redatech.Service.UsuarioService
             try
             {
                 // Busca o usuário no banco, mas sem rastreamento para evitar conflitos
-                User usuarioExistente = await _context.Users
+                User userFound = await _context.Users
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Id == editadoUsuarioDto.Id);
+                    .FirstOrDefaultAsync(user => user.Id == editadoUsuarioDto.Id);
 
-                if (usuarioExistente == null)
+                if (userFound == null)
                 {
                     serviceResponse.Dados = null;
                     serviceResponse.Mensagem = "Usuário não localizado";
@@ -218,12 +218,12 @@ namespace Redatech.Service.UsuarioService
                 }
 
                 // Mapeia os dados editados do DTO para um objeto do tipo UsuarioModel
-                User usuarioAtualizado = _mapper.Map<User>(editadoUsuarioDto);
+                User userUpdated = _mapper.Map<User>(editadoUsuarioDto);
 
-                usuarioAtualizado.SenhaHash = CriptografiaHash.GerarHash(editadoUsuarioDto.SenhaHash);
+                userUpdated.PasswordHash = CriptografiaHash.GerarHash(editadoUsuarioDto.SenhaHash);
 
                 // Atualiza o objeto no contexto
-                _context.Users.Update(usuarioAtualizado);
+                _context.Users.Update(userUpdated);
 
                 // Salva as mudanças no banco
                 await _context.SaveChangesAsync();
@@ -258,11 +258,11 @@ namespace Redatech.Service.UsuarioService
                 //Já o EndsWith() seria LIKE '%ami'.
                 //Contains(nomeParcial) é o equivalente a LIKE '%Nome%'
                 //StartsWith e´o equivalente a LIKE 'Nome%'
-                var usuarios = await _context.Users
-                    .Where(u => u.Nome.StartsWith(nomeParcial))
+                var users = await _context.Users
+                    .Where(user => user.Name.StartsWith(nomeParcial))
                     .ToListAsync();
 
-                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(usuarios);
+                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(users);
                 serviceResponse.Sucesso = true;
                 serviceResponse.Mensagem = "Usuários encontrados com sucesso!";
             }
@@ -280,9 +280,9 @@ namespace Redatech.Service.UsuarioService
             var response = new ServiceResponse<UsuarioLogadoDto>();
 
             var usuario = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+                .FirstOrDefaultAsync(user => user.Email == loginDto.Email);
 
-            if (usuario == null || !CriptografiaHash.VerificarSenha(loginDto.Senha, usuario.SenhaHash))
+            if (usuario == null || !CriptografiaHash.VerificarSenha(loginDto.Senha, usuario.PasswordHash))
             {
                 response.Sucesso = false;
                 response.Mensagem = "Usuário ou senha inválidos!";
@@ -292,9 +292,8 @@ namespace Redatech.Service.UsuarioService
             var usuarioLogado = new UsuarioLogadoDto
             {
                 Id = usuario.Id,
-                Nome = usuario.Nome,
-                Email = usuario.Email,
-                TipoUsuario = usuario.TipoUsuario
+                Nome = usuario.Name,
+                Email = usuario.Email
             };
 
             response.Sucesso = true;

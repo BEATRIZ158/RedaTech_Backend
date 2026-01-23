@@ -3,7 +3,7 @@ using Redatech.Models;
 
 namespace Redatech.Service.CorrecaoService
 {
-    public interface ICorrecaoInterface
+    public interface ICorrectionService
     {
         Task<ServiceResponse<List<CorrecaoDto>>> GetCorrections();
         Task<ServiceResponse<List<CorrecaoDto>>> CreateCorrection(CorrecaoDto novaCorrecaoDto);

@@ -10,9 +10,9 @@ namespace Redatech.Controllers
     [ApiController]
     public class TurmaController : ControllerBase
     {
-        private readonly ITurmaInterface _turmaInterface;
+        private readonly IClassService _turmaInterface;
 
-        public TurmaController(ITurmaInterface turmaInterface)
+        public TurmaController(IClassService turmaInterface)
         {
             _turmaInterface = turmaInterface;
         }

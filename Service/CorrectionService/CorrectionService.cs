@@ -6,12 +6,12 @@ using Redatech.Models;
 
 namespace Redatech.Service.CorrecaoService
 {
-    public class CorrecaoService : ICorrecaoInterface
+    public class CorrectionService : ICorrectionService
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public CorrecaoService(ApplicationDbContext context, IMapper mapper)
+        public CorrectionService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -32,13 +32,13 @@ namespace Redatech.Service.CorrecaoService
                 }
 
                 // Mapeia o DTO para a entidade que será salva no banco
-                Correction novaCorrecao = _mapper.Map<Correction>(novaCorrecaoDto);
+                Correction newCorrection = _mapper.Map<Correction>(novaCorrecaoDto);
 
-                _context.Corrections.Add(novaCorrecao);
+                _context.Corrections.Add(newCorrection);
                 await _context.SaveChangesAsync();
 
-                List<Correction> correcoes = _context.Corrections.ToList();
-                serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(correcoes);
+                List<Correction> corrections = _context.Corrections.ToList();
+                serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(corrections);
 
                 serviceResponse.Mensagem = "Correção criada com sucesso!";
                 serviceResponse.Sucesso = true;
@@ -58,9 +58,9 @@ namespace Redatech.Service.CorrecaoService
 
             try
             {
-                Correction correcao = _context.Corrections.FirstOrDefault(x => x.Id == id);
+                Correction correction = _context.Corrections.FirstOrDefault(correction => correction.Id == id);
 
-                if (correcao == null)
+                if (correction == null)
                 {
                     serviceResponse.Dados = null;
                     serviceResponse.Mensagem = "Correção não localizada";
@@ -69,11 +69,11 @@ namespace Redatech.Service.CorrecaoService
                     return serviceResponse;
                 }
 
-                _context.Corrections.Remove(correcao);
+                _context.Corrections.Remove(correction);
                 await _context.SaveChangesAsync();
 
-                List<Correction> correcoes = await _context.Corrections.ToListAsync();
-                serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(correcoes);
+                List<Correction> corrections = await _context.Corrections.ToListAsync();
+                serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(corrections);
 
             }
             catch (Exception ex)
@@ -91,9 +91,9 @@ namespace Redatech.Service.CorrecaoService
 
             try
             {
-                Correction correcao = await _context.Corrections.FirstOrDefaultAsync(x => x.Id == id);
+                Correction correction = await _context.Corrections.FirstOrDefaultAsync(correction => correction.Id == id);
 
-                if (correcao == null)
+                if (correction == null)
                 {
                     serviceResponse.Dados = null;
                     serviceResponse.Mensagem = "Correção não localizada";
@@ -101,7 +101,7 @@ namespace Redatech.Service.CorrecaoService
                     return serviceResponse;
                 }
 
-                serviceResponse.Dados = _mapper.Map<CorrecaoDto>(correcao);
+                serviceResponse.Dados = _mapper.Map<CorrecaoDto>(correction);
 
                 serviceResponse.Mensagem = "Correção encontrada com sucesso";
                 serviceResponse.Sucesso = true;
@@ -121,9 +121,9 @@ namespace Redatech.Service.CorrecaoService
 
             try
             {
-                List<Correction> correcoes = await _context.Corrections.ToListAsync();
+                List<Correction> corrections = await _context.Corrections.ToListAsync();
 
-                serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(correcoes);
+                serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(corrections);
 
                 serviceResponse.Mensagem = "Lista de correções obtida com sucesso";
                 serviceResponse.Sucesso = true;
@@ -143,11 +143,11 @@ namespace Redatech.Service.CorrecaoService
 
             try
             {
-                Correction correcaoExistente = await _context.Corrections
+                Correction correctionFound = await _context.Corrections
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Id == editadoCorrecaoDto.Id);
+                    .FirstOrDefaultAsync(correction => correction.Id == editadoCorrecaoDto.Id);
 
-                if (correcaoExistente == null)
+                if (correctionFound == null)
                 {
                     serviceResponse.Dados = null;
                     serviceResponse.Mensagem = "Correção não localizada";
@@ -155,14 +155,14 @@ namespace Redatech.Service.CorrecaoService
                     return serviceResponse;
                 }
 
-                Correction correcaoAtualizada = _mapper.Map<Correction>(editadoCorrecaoDto);
+                Correction correctionUpdated = _mapper.Map<Correction>(editadoCorrecaoDto);
 
-                _context.Corrections.Update(correcaoAtualizada);
+                _context.Corrections.Update(correctionUpdated);
 
                 await _context.SaveChangesAsync();
 
-                List<Correction> correcoes = await _context.Corrections.ToListAsync();
-                serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(correcoes);
+                List<Correction> corrections = await _context.Corrections.ToListAsync();
+                serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(corrections);
                 serviceResponse.Sucesso = true;
             }
             catch (Exception ex)

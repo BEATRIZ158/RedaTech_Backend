@@ -6,13 +6,13 @@ using Redatech.Models;
 
 namespace Redatech.Service.RedacaoService
 {
-    public class RedacaoService : IRedacaoInterface
+    public class EssayService : IEssayService
     {
 
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public RedacaoService(ApplicationDbContext context, IMapper mapper)
+        public EssayService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -54,9 +54,9 @@ namespace Redatech.Service.RedacaoService
 
             try
             {
-                Essay redacao = _context.Essays.FirstOrDefault(x => x.Id == id);
+                Essay essay = _context.Essays.FirstOrDefault(x => x.Id == id);
 
-                if (redacao == null)
+                if (essay == null)
                 {
                     serviceResponse.Dados = null;
                     serviceResponse.Mensagem = "Redação não localizada";
@@ -65,20 +65,19 @@ namespace Redatech.Service.RedacaoService
                     return serviceResponse;
                 }
 
-                _context.Essays.Remove(redacao);
+                _context.Essays.Remove(essay);
                 await _context.SaveChangesAsync();
 
                 // Exclui o arquivo da redação da pasta
-                if (!string.IsNullOrEmpty(redacao.CaminhoArquivo))
+                if (!string.IsNullOrEmpty(essay.FilePath))
                 {
-                    var caminhoArquivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", redacao.CaminhoArquivo);
+                    var caminhoArquivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", essay.FilePath);
                     if (File.Exists(caminhoArquivo))
                         File.Delete(caminhoArquivo);
                 }
 
-                List<Essay> redacoes = await _context.Essays.ToListAsync();
-                serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(redacoes);
-
+                List<Essay> essays = await _context.Essays.ToListAsync();
+                serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(essays);
             }
             catch (Exception ex)
             {
@@ -95,9 +94,9 @@ namespace Redatech.Service.RedacaoService
 
             try
             {
-                Essay redacao = await _context.Essays.FirstOrDefaultAsync(x => x.Id == id);
+                Essay essay = await _context.Essays.FirstOrDefaultAsync(essay => essay.Id == id);
 
-                if (redacao == null)
+                if (essay == null)
                 {
                     serviceResponse.Dados = null;
                     serviceResponse.Mensagem = "Redação não localizado";
@@ -105,7 +104,7 @@ namespace Redatech.Service.RedacaoService
                     return serviceResponse;
                 }
 
-                serviceResponse.Dados = _mapper.Map<RedacaoDto>(redacao);
+                serviceResponse.Dados = _mapper.Map<RedacaoDto>(essay);
 
                 serviceResponse.Mensagem = "Redação encontrado com sucesso";
                 serviceResponse.Sucesso = true;
@@ -125,9 +124,9 @@ namespace Redatech.Service.RedacaoService
 
             try
             {
-                List<Essay> redacoes = await _context.Essays.ToListAsync();
+                List<Essay> essays = await _context.Essays.ToListAsync();
 
-                serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(redacoes);
+                serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(essays);
                 serviceResponse.Mensagem = "Lista de redações obtida com sucesso";
                 serviceResponse.Sucesso = true;
             }
@@ -146,9 +145,9 @@ namespace Redatech.Service.RedacaoService
 
             try
             {
-                var redacaoExistente = await _context.Essays.FirstOrDefaultAsync(r => r.Id == redacaoAtualizada.Id);
+                var essay = await _context.Essays.FirstOrDefaultAsync(essay => essay.Id == redacaoAtualizada.Id);
 
-                if (redacaoExistente == null)
+                if (essay == null)
                 {
                     response.Mensagem = "Redação não encontrada.";
                     response.Sucesso = false;
@@ -156,43 +155,41 @@ namespace Redatech.Service.RedacaoService
                 }
 
                 // Atualiza os dados básicos
-                redacaoExistente.Descricao = redacaoAtualizada.Descricao;
+                essay.Description = redacaoAtualizada.Descricao;
 
                 // Se um novo arquivo foi enviado
                 if (novoArquivo != null && novoArquivo.Length > 0)
                 {
                     // Exclui o arquivo antigo
-                    if (!string.IsNullOrEmpty(redacaoExistente.CaminhoArquivo))
+                    if (!string.IsNullOrEmpty(essay.FilePath))
                     {
-                        var caminhoArquivoAntigo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", redacaoExistente.CaminhoArquivo);
+                        var caminhoArquivoAntigo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", essay.FilePath);
                         if (File.Exists(caminhoArquivoAntigo))
-                        {
                             File.Delete(caminhoArquivoAntigo);
-                        }
                     }
 
                     // Garante que a pasta existe
-                    var pastaDestino = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "redacoes");
-                    if (!Directory.Exists(pastaDestino))
-                        Directory.CreateDirectory(pastaDestino);
+                    var pathDestiny = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "redacoes");
+                    if (!Directory.Exists(pathDestiny))
+                        Directory.CreateDirectory(pathDestiny);
 
                     // Cria nome único
-                    var nomeArquivo = $"{Guid.NewGuid()}_{novoArquivo.FileName}";
-                    var caminhoCompleto = Path.Combine(pastaDestino, nomeArquivo);
+                    var fileName = $"{Guid.NewGuid()}_{novoArquivo.FileName}";
+                    var pathComplete = Path.Combine(pathDestiny, fileName);
 
                     // Salva o novo arquivo
-                    using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+                    using (var stream = new FileStream(pathComplete, FileMode.Create))
                     {
                         await novoArquivo.CopyToAsync(stream);
                     }
 
                     // Atualiza o caminho no banco
-                    redacaoExistente.CaminhoArquivo = Path.Combine("redacoes", nomeArquivo);
+                    essay.FilePath = Path.Combine("redacoes", fileName);
                 }
 
                 await _context.SaveChangesAsync();
 
-                response.Dados = _mapper.Map<RedacaoDto>(redacaoExistente);
+                response.Dados = _mapper.Map<RedacaoDto>(essay);
                 response.Mensagem = "Redação atualizada com sucesso!";
                 response.Sucesso = true;
             }
@@ -205,34 +202,34 @@ namespace Redatech.Service.RedacaoService
             return response;
         }
 
-        public async Task<ServiceResponse<string>> UploadFileEssay(IFormFile arquivo)
+        public async Task<ServiceResponse<string>> UploadFileEssay(IFormFile file)
         {
             var response = new ServiceResponse<string>();
 
             try
             {
-                if (arquivo == null || arquivo.Length == 0)
+                if (file == null || file.Length == 0)
                 {
                     response.Sucesso = false;
                     response.Mensagem = "Arquivo inválido!";
                     return response;
                 }
 
-                var nomeArquivo = Guid.NewGuid().ToString() + Path.GetExtension(arquivo.FileName);
-                var caminhoPasta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "redacoes");
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                var pathFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "redacoes");
 
-                if (!Directory.Exists(caminhoPasta))
-                    Directory.CreateDirectory(caminhoPasta);
+                if (!Directory.Exists(pathFolder))
+                    Directory.CreateDirectory(pathFolder);
 
-                var caminhoCompleto = Path.Combine(caminhoPasta, nomeArquivo);
+                var pathComplete = Path.Combine(pathFolder, fileName);
 
-                using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+                using (var stream = new FileStream(pathComplete, FileMode.Create))
                 {
-                    await arquivo.CopyToAsync(stream);
+                    await file.CopyToAsync(stream);
                 }
 
-                string caminhoBanco = Path.Combine("redacoes", nomeArquivo).Replace("\\", "/");
-                response.Dados = caminhoBanco;
+                string pathDatabase = Path.Combine("redacoes", fileName).Replace("\\", "/");
+                response.Dados = pathDatabase;
                 response.Mensagem = "Arquivo enviado com sucesso!";
                 response.Sucesso = true;
             }
@@ -252,9 +249,9 @@ namespace Redatech.Service.RedacaoService
 
             try
             {
-                List<Essay> redacoes = await _context.Essays.ToListAsync();
+                List<Essay> essays = await _context.Essays.ToListAsync();
 
-                serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(redacoes);
+                serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(essays);
                 serviceResponse.Mensagem = "Lista de redações obtida com sucesso";
                 serviceResponse.Sucesso = true;
             }

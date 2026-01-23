@@ -3,7 +3,7 @@ using Redatech.Models;
 
 namespace Redatech.Service.TurmaService
 {
-    public interface ITurmaInterface
+    public interface IClassService
     {
         Task<ServiceResponse<List<TurmaDto>>> GetClasses();
         Task<ServiceResponse<List<TurmaDto>>> CreateClass(TurmaDto novaTurmaDto);
