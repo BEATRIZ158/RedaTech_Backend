@@ -32,12 +32,12 @@ namespace Redatech.Service.CorrecaoService
                 }
 
                 // Mapeia o DTO para a entidade que será salva no banco
-                CorrecaoModel novaCorrecao = _mapper.Map<CorrecaoModel>(novaCorrecaoDto);
+                Correction novaCorrecao = _mapper.Map<Correction>(novaCorrecaoDto);
 
-                _context.Correcoes.Add(novaCorrecao);
+                _context.Corrections.Add(novaCorrecao);
                 await _context.SaveChangesAsync();
 
-                List<CorrecaoModel> correcoes = _context.Correcoes.ToList();
+                List<Correction> correcoes = _context.Corrections.ToList();
                 serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(correcoes);
 
                 serviceResponse.Mensagem = "Correção criada com sucesso!";
@@ -58,7 +58,7 @@ namespace Redatech.Service.CorrecaoService
 
             try
             {
-                CorrecaoModel correcao = _context.Correcoes.FirstOrDefault(x => x.Id == id);
+                Correction correcao = _context.Corrections.FirstOrDefault(x => x.Id == id);
 
                 if (correcao == null)
                 {
@@ -69,10 +69,10 @@ namespace Redatech.Service.CorrecaoService
                     return serviceResponse;
                 }
 
-                _context.Correcoes.Remove(correcao);
+                _context.Corrections.Remove(correcao);
                 await _context.SaveChangesAsync();
 
-                List<CorrecaoModel> correcoes = await _context.Correcoes.ToListAsync();
+                List<Correction> correcoes = await _context.Corrections.ToListAsync();
                 serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(correcoes);
 
             }
@@ -91,7 +91,7 @@ namespace Redatech.Service.CorrecaoService
 
             try
             {
-                CorrecaoModel correcao = await _context.Correcoes.FirstOrDefaultAsync(x => x.Id == id);
+                Correction correcao = await _context.Corrections.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (correcao == null)
                 {
@@ -121,7 +121,7 @@ namespace Redatech.Service.CorrecaoService
 
             try
             {
-                List<CorrecaoModel> correcoes = await _context.Correcoes.ToListAsync();
+                List<Correction> correcoes = await _context.Corrections.ToListAsync();
 
                 serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(correcoes);
 
@@ -143,7 +143,7 @@ namespace Redatech.Service.CorrecaoService
 
             try
             {
-                CorrecaoModel correcaoExistente = await _context.Correcoes
+                Correction correcaoExistente = await _context.Corrections
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.Id == editadoCorrecaoDto.Id);
 
@@ -155,13 +155,13 @@ namespace Redatech.Service.CorrecaoService
                     return serviceResponse;
                 }
 
-                CorrecaoModel correcaoAtualizada = _mapper.Map<CorrecaoModel>(editadoCorrecaoDto);
+                Correction correcaoAtualizada = _mapper.Map<Correction>(editadoCorrecaoDto);
 
-                _context.Correcoes.Update(correcaoAtualizada);
+                _context.Corrections.Update(correcaoAtualizada);
 
                 await _context.SaveChangesAsync();
 
-                List<CorrecaoModel> correcoes = await _context.Correcoes.ToListAsync();
+                List<Correction> correcoes = await _context.Corrections.ToListAsync();
                 serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(correcoes);
                 serviceResponse.Sucesso = true;
             }

@@ -2,12 +2,11 @@
 
 namespace Redatech.Enums
 {
-   
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum StatusCorrecao
+    public enum StatusCorrection
     {
-        EmAndamento = 1,
-        Concluida = 2,
-        EmRevisao = 3
+        InProgress = 1,
+        Completed = 2,
+        UnderReview = 3
     }
 }

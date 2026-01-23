@@ -10,11 +10,11 @@ namespace Redatech.DataContext
 
         }
 
-        public DbSet<UsuarioModel> Usuarios { get; set; }
-        public DbSet<TurmaModel> Turmas { get; set; }
-        public DbSet<RedacaoModel> Redacoes { get; set; }
-        public DbSet<CorrecaoModel> Correcoes { get; set; }
-        public DbSet<TurmasAlunosModel> TurmasAlunos { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Class> Classes { get; set; }
+        public DbSet<Essay> Essays { get; set; }
+        public DbSet<Correction> Corrections { get; set; }
+        public DbSet<ClassStudent> ClassesStudents { get; set; }
         public DbSet<RefreshTokenModel> RefreshTokens { get; set; }
     }
 }

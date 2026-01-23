@@ -31,11 +31,11 @@ namespace Redatech.Service.RedacaoService
                     return response;
                 }
 
-                RedacaoModel redacao = _mapper.Map<RedacaoModel>(novaRedacaoDto);
-                _context.Redacoes.Add(redacao);
+                Essay redacao = _mapper.Map<Essay>(novaRedacaoDto);
+                _context.Essays.Add(redacao);
                 await _context.SaveChangesAsync();
 
-                var lista = _context.Redacoes.ToList();
+                var lista = _context.Essays.ToList();
                 response.Dados = _mapper.Map<List<RedacaoDto>>(lista);
                 response.Mensagem = "Redação criada com sucesso!";
             }
@@ -54,7 +54,7 @@ namespace Redatech.Service.RedacaoService
 
             try
             {
-                RedacaoModel redacao = _context.Redacoes.FirstOrDefault(x => x.Id == id);
+                Essay redacao = _context.Essays.FirstOrDefault(x => x.Id == id);
 
                 if (redacao == null)
                 {
@@ -65,7 +65,7 @@ namespace Redatech.Service.RedacaoService
                     return serviceResponse;
                 }
 
-                _context.Redacoes.Remove(redacao);
+                _context.Essays.Remove(redacao);
                 await _context.SaveChangesAsync();
 
                 // Exclui o arquivo da redação da pasta
@@ -76,7 +76,7 @@ namespace Redatech.Service.RedacaoService
                         File.Delete(caminhoArquivo);
                 }
 
-                List<RedacaoModel> redacoes = await _context.Redacoes.ToListAsync();
+                List<Essay> redacoes = await _context.Essays.ToListAsync();
                 serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(redacoes);
 
             }
@@ -95,7 +95,7 @@ namespace Redatech.Service.RedacaoService
 
             try
             {
-                RedacaoModel redacao = await _context.Redacoes.FirstOrDefaultAsync(x => x.Id == id);
+                Essay redacao = await _context.Essays.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (redacao == null)
                 {
@@ -125,7 +125,7 @@ namespace Redatech.Service.RedacaoService
 
             try
             {
-                List<RedacaoModel> redacoes = await _context.Redacoes.ToListAsync();
+                List<Essay> redacoes = await _context.Essays.ToListAsync();
 
                 serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(redacoes);
                 serviceResponse.Mensagem = "Lista de redações obtida com sucesso";
@@ -146,7 +146,7 @@ namespace Redatech.Service.RedacaoService
 
             try
             {
-                var redacaoExistente = await _context.Redacoes.FirstOrDefaultAsync(r => r.Id == redacaoAtualizada.Id);
+                var redacaoExistente = await _context.Essays.FirstOrDefaultAsync(r => r.Id == redacaoAtualizada.Id);
 
                 if (redacaoExistente == null)
                 {
@@ -252,7 +252,7 @@ namespace Redatech.Service.RedacaoService
 
             try
             {
-                List<RedacaoModel> redacoes = await _context.Redacoes.ToListAsync();
+                List<Essay> redacoes = await _context.Essays.ToListAsync();
 
                 serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(redacoes);
                 serviceResponse.Mensagem = "Lista de redações obtida com sucesso";

@@ -40,17 +40,17 @@ namespace Redatech.Service.UsuarioService
                 }
 
                 // Mapeia o DTO para a entidade que será salva no banco
-                UsuarioModel novoUsuario = _mapper.Map<UsuarioModel>(novoUsuarioDto);
+                User novoUsuario = _mapper.Map<User>(novoUsuarioDto);
                 novoUsuario.Status = true;
 
                 novoUsuario.SenhaHash = CriptografiaHash.GerarHash(novoUsuarioDto.SenhaHash);
 
                 // Adiciona ao banco de dados
-                _context.Usuarios.Add(novoUsuario);
+                _context.Users.Add(novoUsuario);
                 await _context.SaveChangesAsync();
 
                 // Recupera todos os usuários já convertidos para DTO
-                List<UsuarioModel> usuarios = _context.Usuarios.ToList();
+                List<User> usuarios = _context.Users.ToList();
                 serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(usuarios);
 
                 serviceResponse.Mensagem = "Usuário criado com sucesso!";
@@ -71,7 +71,7 @@ namespace Redatech.Service.UsuarioService
 
             try
             {
-                UsuarioModel usuario = _context.Usuarios.FirstOrDefault(x => x.Id == id);
+                User usuario = _context.Users.FirstOrDefault(x => x.Id == id);
 
                 if (usuario == null)
                 {
@@ -82,10 +82,10 @@ namespace Redatech.Service.UsuarioService
                     return serviceResponse;
                 }
 
-                _context.Usuarios.Remove(usuario);
+                _context.Users.Remove(usuario);
                 await _context.SaveChangesAsync();
 
-                List<UsuarioModel> usuarios = await _context.Usuarios.ToListAsync();
+                List<User> usuarios = await _context.Users.ToListAsync();
                 serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(usuarios);
 
             }
@@ -105,7 +105,7 @@ namespace Redatech.Service.UsuarioService
             try
             {
                 // Realiza a busca do usuário no banco
-                UsuarioModel usuario = await _context.Usuarios.FirstOrDefaultAsync(x => x.Id == id);
+                User usuario = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
 
                 // Caso não encontre o usuário, atribui a mensagem de erro
                 if (usuario == null)
@@ -140,7 +140,7 @@ namespace Redatech.Service.UsuarioService
             try
             {
                 // Obtém todos os usuários do banco
-                List<UsuarioModel> usuarios = await _context.Usuarios.ToListAsync();
+                List<User> usuarios = await _context.Users.ToListAsync();
 
                 // Converte a lista de UsuarioModel para UsuarioDto usando AutoMapper
                 serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(usuarios);
@@ -166,7 +166,7 @@ namespace Redatech.Service.UsuarioService
 
             try
             {
-                UsuarioModel usuario = _context.Usuarios.FirstOrDefault(x => x.Id == id);
+                User usuario = _context.Users.FirstOrDefault(x => x.Id == id);
 
                 if (usuario == null)
                 {
@@ -181,12 +181,12 @@ namespace Redatech.Service.UsuarioService
                 usuario.Status = !usuario.Status;
 
                 /*Dentro da tabela de usuario, fazer um update no usuario definido */
-                _context.Usuarios.Update(usuario);
+                _context.Users.Update(usuario);
 
                 /* Salvar a operação realizada */
                 await _context.SaveChangesAsync();
 
-                List<UsuarioModel> usuarios = await _context.Usuarios.ToListAsync();
+                List<User> usuarios = await _context.Users.ToListAsync();
                 serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(usuarios);
             }
             catch (Exception ex)
@@ -205,7 +205,7 @@ namespace Redatech.Service.UsuarioService
             try
             {
                 // Busca o usuário no banco, mas sem rastreamento para evitar conflitos
-                UsuarioModel usuarioExistente = await _context.Usuarios
+                User usuarioExistente = await _context.Users
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.Id == editadoUsuarioDto.Id);
 
@@ -218,18 +218,18 @@ namespace Redatech.Service.UsuarioService
                 }
 
                 // Mapeia os dados editados do DTO para um objeto do tipo UsuarioModel
-                UsuarioModel usuarioAtualizado = _mapper.Map<UsuarioModel>(editadoUsuarioDto);
+                User usuarioAtualizado = _mapper.Map<User>(editadoUsuarioDto);
 
                 usuarioAtualizado.SenhaHash = CriptografiaHash.GerarHash(editadoUsuarioDto.SenhaHash);
 
                 // Atualiza o objeto no contexto
-                _context.Usuarios.Update(usuarioAtualizado);
+                _context.Users.Update(usuarioAtualizado);
 
                 // Salva as mudanças no banco
                 await _context.SaveChangesAsync();
 
                 // Retorna a lista atualizada de usuários
-                List<UsuarioModel> usuarios = await _context.Usuarios.ToListAsync();
+                List<User> usuarios = await _context.Users.ToListAsync();
                 serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(usuarios);
                 serviceResponse.Sucesso = true;
             }
@@ -258,7 +258,7 @@ namespace Redatech.Service.UsuarioService
                 //Já o EndsWith() seria LIKE '%ami'.
                 //Contains(nomeParcial) é o equivalente a LIKE '%Nome%'
                 //StartsWith e´o equivalente a LIKE 'Nome%'
-                var usuarios = await _context.Usuarios
+                var usuarios = await _context.Users
                     .Where(u => u.Nome.StartsWith(nomeParcial))
                     .ToListAsync();
 
@@ -279,7 +279,7 @@ namespace Redatech.Service.UsuarioService
         {
             var response = new ServiceResponse<UsuarioLogadoDto>();
 
-            var usuario = await _context.Usuarios
+            var usuario = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
 
             if (usuario == null || !CriptografiaHash.VerificarSenha(loginDto.Senha, usuario.SenhaHash))

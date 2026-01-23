@@ -31,13 +31,13 @@ namespace Redatech.Service.TurmaService
                     return serviceResponse;
                 }
 
-                TurmaModel novaTurma = _mapper.Map<TurmaModel>(novaTurmaDto);
+                Class novaTurma = _mapper.Map<Class>(novaTurmaDto);
                 novaTurma.Status = true;
 
-                _context.Turmas.Add(novaTurma);
+                _context.Classes.Add(novaTurma);
                 await _context.SaveChangesAsync();
 
-                List<TurmaModel> turmas = _context.Turmas.ToList();
+                List<Class> turmas = _context.Classes.ToList();
                 serviceResponse.Dados = _mapper.Map<List<TurmaDto>>(turmas);
 
                 serviceResponse.Mensagem = "Turma criada com sucesso!";
@@ -58,7 +58,7 @@ namespace Redatech.Service.TurmaService
 
             try
             {
-                TurmaModel turma = _context.Turmas.FirstOrDefault(x => x.Id == id);
+                Class turma = _context.Classes.FirstOrDefault(x => x.Id == id);
 
                 if (turma == null)
                 {
@@ -69,10 +69,10 @@ namespace Redatech.Service.TurmaService
                     return serviceResponse;
                 }
 
-                _context.Turmas.Remove(turma);
+                _context.Classes.Remove(turma);
                 await _context.SaveChangesAsync();
 
-                List<TurmaModel> turmas = await _context.Turmas.ToListAsync();
+                List<Class> turmas = await _context.Classes.ToListAsync();
                 serviceResponse.Dados = _mapper.Map<List<TurmaDto>>(turmas);
 
             }
@@ -91,7 +91,7 @@ namespace Redatech.Service.TurmaService
 
             try
             {
-                TurmaModel turma = await _context.Turmas.FirstOrDefaultAsync(x => x.Id == id);
+                Class turma = await _context.Classes.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (turma == null)
                 {
@@ -121,7 +121,7 @@ namespace Redatech.Service.TurmaService
 
             try
             {
-                List<TurmaModel> turmas = await _context.Turmas.ToListAsync();
+                List<Class> turmas = await _context.Classes.ToListAsync();
 
                 serviceResponse.Dados = _mapper.Map<List<TurmaDto>>(turmas);
 
@@ -143,7 +143,7 @@ namespace Redatech.Service.TurmaService
 
             try
             {
-                TurmaModel turma = _context.Turmas.FirstOrDefault(x => x.Id == id);
+                Class turma = _context.Classes.FirstOrDefault(x => x.Id == id);
 
                 if (turma == null)
                 {
@@ -156,11 +156,11 @@ namespace Redatech.Service.TurmaService
 
                 turma.Status = !turma.Status;
 
-                _context.Turmas.Update(turma);
+                _context.Classes.Update(turma);
 
                 await _context.SaveChangesAsync();
 
-                List<TurmaModel> turmas = await _context.Turmas.ToListAsync();
+                List<Class> turmas = await _context.Classes.ToListAsync();
                 serviceResponse.Dados = _mapper.Map<List<TurmaDto>>(turmas);
             }
             catch (Exception ex)
@@ -178,7 +178,7 @@ namespace Redatech.Service.TurmaService
 
             try
             {
-                TurmaModel turmaExistente = await _context.Turmas
+                Class turmaExistente = await _context.Classes
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.Id == editadoTurmaDto.Id);
 
@@ -190,13 +190,13 @@ namespace Redatech.Service.TurmaService
                     return serviceResponse;
                 }
 
-                TurmaModel turmaAtualizado = _mapper.Map<TurmaModel>(editadoTurmaDto);
+                Class turmaAtualizado = _mapper.Map<Class>(editadoTurmaDto);
 
-                _context.Turmas.Update(turmaAtualizado);
+                _context.Classes.Update(turmaAtualizado);
 
                 await _context.SaveChangesAsync();
 
-                List<TurmaModel> turmas = await _context.Turmas.ToListAsync();
+                List<Class> turmas = await _context.Classes.ToListAsync();
                 serviceResponse.Dados = _mapper.Map<List<TurmaDto>>(turmas);
                 serviceResponse.Sucesso = true;
             }
@@ -215,7 +215,7 @@ namespace Redatech.Service.TurmaService
 
             try
             {
-                var jaExiste = await _context.TurmasAlunos
+                var jaExiste = await _context.ClassesStudents
                     .AnyAsync(ta => ta.TurmaId == turmaId && ta.AlunoId == alunoId);
 
                 if (jaExiste)
@@ -225,7 +225,7 @@ namespace Redatech.Service.TurmaService
                     return response;
                 }
 
-                var turma = await _context.Turmas.FirstOrDefaultAsync(x => x.Id == turmaId);
+                var turma = await _context.Classes.FirstOrDefaultAsync(x => x.Id == turmaId);
 
                 if (turma == null)
                 {
@@ -242,7 +242,7 @@ namespace Redatech.Service.TurmaService
                 }
 
                 //Se estiver tudo certo, adicione o aluno a turma
-                _context.TurmasAlunos.Add(new TurmasAlunosModel
+                _context.ClassesStudents.Add(new ClassStudent
                 {
                     TurmaId = turmaId,
                     AlunoId = alunoId,
@@ -269,7 +269,7 @@ namespace Redatech.Service.TurmaService
 
             try
             {
-                var relacao = await _context.TurmasAlunos
+                var relacao = await _context.ClassesStudents
                     .FirstOrDefaultAsync(ta => ta.TurmaId == turmaId && ta.AlunoId == alunoId);
 
                 if (relacao == null)
@@ -279,7 +279,7 @@ namespace Redatech.Service.TurmaService
                     return response;
                 }
 
-                var turma = await _context.Turmas.FirstOrDefaultAsync(x => x.Id == turmaId);
+                var turma = await _context.Classes.FirstOrDefaultAsync(x => x.Id == turmaId);
 
                 if (turma == null)
                 {
@@ -295,7 +295,7 @@ namespace Redatech.Service.TurmaService
                     return response;
                 }
 
-                _context.TurmasAlunos.Remove(relacao);
+                _context.ClassesStudents.Remove(relacao);
                 await _context.SaveChangesAsync();
 
                 response.Sucesso = true;
@@ -316,16 +316,16 @@ namespace Redatech.Service.TurmaService
 
             try
             {
-                var alunosIds = await _context.TurmasAlunos
+                var alunosIds = await _context.ClassesStudents
                     .Where(t => t.TurmaId == turmaId)
                     .Select(t => t.AlunoId)
                     .ToListAsync();
 
-                var alunos = await _context.Usuarios
+                var alunos = await _context.Users
                     .Where(u => alunosIds.Contains(u.Id))
                     .ToListAsync();
 
-                var turma = await _context.Turmas.FirstOrDefaultAsync(x => x.Id == turmaId);
+                var turma = await _context.Classes.FirstOrDefaultAsync(x => x.Id == turmaId);
 
                 if (turma == null)
                 {
@@ -360,7 +360,7 @@ namespace Redatech.Service.TurmaService
                     return serviceResponse;
                 }
 
-                var turmas = await _context.Turmas
+                var turmas = await _context.Classes
                     .Where(u => u.Nome.StartsWith(nomeTurmaParcial))
                     .ToListAsync();
 
