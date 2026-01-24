@@ -25,9 +25,9 @@ namespace Redatech.Service.CorrecaoService
             {
                 if (novaCorrecaoDto == null)
                 {
-                    serviceResponse.Dados = null;
-                    serviceResponse.Mensagem = "Informar dados!";
-                    serviceResponse.Sucesso = false;
+                    serviceResponse.Data = null;
+                    serviceResponse.Message = "Informar dados!";
+                    serviceResponse.Success = false;
                     return serviceResponse;
                 }
 
@@ -38,15 +38,15 @@ namespace Redatech.Service.CorrecaoService
                 await _context.SaveChangesAsync();
 
                 List<Correction> corrections = _context.Corrections.ToList();
-                serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(corrections);
+                serviceResponse.Data = _mapper.Map<List<CorrecaoDto>>(corrections);
 
-                serviceResponse.Mensagem = "Correção criada com sucesso!";
-                serviceResponse.Sucesso = true;
+                serviceResponse.Message = "Correção criada com sucesso!";
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
-                serviceResponse.Sucesso = false;
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
             }
 
             return serviceResponse;
@@ -62,9 +62,9 @@ namespace Redatech.Service.CorrecaoService
 
                 if (correction == null)
                 {
-                    serviceResponse.Dados = null;
-                    serviceResponse.Mensagem = "Correção não localizada";
-                    serviceResponse.Sucesso = false;
+                    serviceResponse.Data = null;
+                    serviceResponse.Message = "Correção não localizada";
+                    serviceResponse.Success = false;
 
                     return serviceResponse;
                 }
@@ -73,13 +73,13 @@ namespace Redatech.Service.CorrecaoService
                 await _context.SaveChangesAsync();
 
                 List<Correction> corrections = await _context.Corrections.ToListAsync();
-                serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(corrections);
+                serviceResponse.Data = _mapper.Map<List<CorrecaoDto>>(corrections);
 
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
-                serviceResponse.Sucesso = false;
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
             }
 
             return serviceResponse;
@@ -95,21 +95,21 @@ namespace Redatech.Service.CorrecaoService
 
                 if (correction == null)
                 {
-                    serviceResponse.Dados = null;
-                    serviceResponse.Mensagem = "Correção não localizada";
-                    serviceResponse.Sucesso = false;
+                    serviceResponse.Data = null;
+                    serviceResponse.Message = "Correção não localizada";
+                    serviceResponse.Success = false;
                     return serviceResponse;
                 }
 
-                serviceResponse.Dados = _mapper.Map<CorrecaoDto>(correction);
+                serviceResponse.Data = _mapper.Map<CorrecaoDto>(correction);
 
-                serviceResponse.Mensagem = "Correção encontrada com sucesso";
-                serviceResponse.Sucesso = true;
+                serviceResponse.Message = "Correção encontrada com sucesso";
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
-                serviceResponse.Sucesso = false;
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
             }
 
             return serviceResponse;
@@ -123,15 +123,15 @@ namespace Redatech.Service.CorrecaoService
             {
                 List<Correction> corrections = await _context.Corrections.ToListAsync();
 
-                serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(corrections);
+                serviceResponse.Data = _mapper.Map<List<CorrecaoDto>>(corrections);
 
-                serviceResponse.Mensagem = "Lista de correções obtida com sucesso";
-                serviceResponse.Sucesso = true;
+                serviceResponse.Message = "Lista de correções obtida com sucesso";
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
-                serviceResponse.Sucesso = false;
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
             }
 
             return serviceResponse;
@@ -149,9 +149,9 @@ namespace Redatech.Service.CorrecaoService
 
                 if (correctionFound == null)
                 {
-                    serviceResponse.Dados = null;
-                    serviceResponse.Mensagem = "Correção não localizada";
-                    serviceResponse.Sucesso = false;
+                    serviceResponse.Data = null;
+                    serviceResponse.Message = "Correção não localizada";
+                    serviceResponse.Success = false;
                     return serviceResponse;
                 }
 
@@ -162,13 +162,13 @@ namespace Redatech.Service.CorrecaoService
                 await _context.SaveChangesAsync();
 
                 List<Correction> corrections = await _context.Corrections.ToListAsync();
-                serviceResponse.Dados = _mapper.Map<List<CorrecaoDto>>(corrections);
-                serviceResponse.Sucesso = true;
+                serviceResponse.Data = _mapper.Map<List<CorrecaoDto>>(corrections);
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
-                serviceResponse.Sucesso = false;
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
             }
 
             return serviceResponse;

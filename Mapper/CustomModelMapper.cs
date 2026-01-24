@@ -11,7 +11,7 @@ namespace Redatech.Mapper
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile<UsuarioProfile>(); // Adiciona o perfil do usuário
+                cfg.AddProfile<UserProfile>(); // Adiciona o perfil do usuário
             });
             _mapper = config.CreateMapper();
         }

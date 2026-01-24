@@ -8,5 +8,7 @@
         public int TeacherId { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsActive { get; set; }
+
+        public List<ClassStudent> ClassStudents { get; set; } = new();
     }
 }

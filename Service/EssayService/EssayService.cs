@@ -26,8 +26,8 @@ namespace Redatech.Service.RedacaoService
             {
                 if (novaRedacaoDto == null)
                 {
-                    response.Sucesso = false;
-                    response.Mensagem = "Dados inválidos.";
+                    response.Success = false;
+                    response.Message = "Dados inválidos.";
                     return response;
                 }
 
@@ -36,13 +36,13 @@ namespace Redatech.Service.RedacaoService
                 await _context.SaveChangesAsync();
 
                 var lista = _context.Essays.ToList();
-                response.Dados = _mapper.Map<List<RedacaoDto>>(lista);
-                response.Mensagem = "Redação criada com sucesso!";
+                response.Data = _mapper.Map<List<RedacaoDto>>(lista);
+                response.Message = "Redação criada com sucesso!";
             }
             catch (Exception ex)
             {
-                response.Sucesso = false;
-                response.Mensagem = ex.Message;
+                response.Success = false;
+                response.Message = ex.Message;
             }
 
             return response;
@@ -58,9 +58,9 @@ namespace Redatech.Service.RedacaoService
 
                 if (essay == null)
                 {
-                    serviceResponse.Dados = null;
-                    serviceResponse.Mensagem = "Redação não localizada";
-                    serviceResponse.Sucesso = false;
+                    serviceResponse.Data = null;
+                    serviceResponse.Message = "Redação não localizada";
+                    serviceResponse.Success = false;
 
                     return serviceResponse;
                 }
@@ -77,12 +77,12 @@ namespace Redatech.Service.RedacaoService
                 }
 
                 List<Essay> essays = await _context.Essays.ToListAsync();
-                serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(essays);
+                serviceResponse.Data = _mapper.Map<List<RedacaoDto>>(essays);
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
-                serviceResponse.Sucesso = false;
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
             }
 
             return serviceResponse;
@@ -98,21 +98,21 @@ namespace Redatech.Service.RedacaoService
 
                 if (essay == null)
                 {
-                    serviceResponse.Dados = null;
-                    serviceResponse.Mensagem = "Redação não localizado";
-                    serviceResponse.Sucesso = false;
+                    serviceResponse.Data = null;
+                    serviceResponse.Message = "Redação não localizado";
+                    serviceResponse.Success = false;
                     return serviceResponse;
                 }
 
-                serviceResponse.Dados = _mapper.Map<RedacaoDto>(essay);
+                serviceResponse.Data = _mapper.Map<RedacaoDto>(essay);
 
-                serviceResponse.Mensagem = "Redação encontrado com sucesso";
-                serviceResponse.Sucesso = true;
+                serviceResponse.Message = "Redação encontrado com sucesso";
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
-                serviceResponse.Sucesso = false;
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
             }
 
             return serviceResponse;
@@ -126,14 +126,14 @@ namespace Redatech.Service.RedacaoService
             {
                 List<Essay> essays = await _context.Essays.ToListAsync();
 
-                serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(essays);
-                serviceResponse.Mensagem = "Lista de redações obtida com sucesso";
-                serviceResponse.Sucesso = true;
+                serviceResponse.Data = _mapper.Map<List<RedacaoDto>>(essays);
+                serviceResponse.Message = "Lista de redações obtida com sucesso";
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
-                serviceResponse.Sucesso = false;
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
             }
 
             return serviceResponse;
@@ -149,8 +149,8 @@ namespace Redatech.Service.RedacaoService
 
                 if (essay == null)
                 {
-                    response.Mensagem = "Redação não encontrada.";
-                    response.Sucesso = false;
+                    response.Message = "Redação não encontrada.";
+                    response.Success = false;
                     return response;
                 }
 
@@ -189,14 +189,14 @@ namespace Redatech.Service.RedacaoService
 
                 await _context.SaveChangesAsync();
 
-                response.Dados = _mapper.Map<RedacaoDto>(essay);
-                response.Mensagem = "Redação atualizada com sucesso!";
-                response.Sucesso = true;
+                response.Data = _mapper.Map<RedacaoDto>(essay);
+                response.Message = "Redação atualizada com sucesso!";
+                response.Success = true;
             }
             catch (Exception ex)
             {
-                response.Mensagem = $"Erro ao atualizar: {ex.Message}";
-                response.Sucesso = false;
+                response.Message = $"Erro ao atualizar: {ex.Message}";
+                response.Success = false;
             }
 
             return response;
@@ -210,8 +210,8 @@ namespace Redatech.Service.RedacaoService
             {
                 if (file == null || file.Length == 0)
                 {
-                    response.Sucesso = false;
-                    response.Mensagem = "Arquivo inválido!";
+                    response.Success = false;
+                    response.Message = "Arquivo inválido!";
                     return response;
                 }
 
@@ -229,14 +229,14 @@ namespace Redatech.Service.RedacaoService
                 }
 
                 string pathDatabase = Path.Combine("redacoes", fileName).Replace("\\", "/");
-                response.Dados = pathDatabase;
-                response.Mensagem = "Arquivo enviado com sucesso!";
-                response.Sucesso = true;
+                response.Data = pathDatabase;
+                response.Message = "Arquivo enviado com sucesso!";
+                response.Success = true;
             }
             catch (Exception ex)
             {
-                response.Sucesso = false;
-                response.Mensagem = $"Erro ao fazer upload: {ex.Message}";
+                response.Success = false;
+                response.Message = $"Erro ao fazer upload: {ex.Message}";
             }
 
             return response;
@@ -251,14 +251,14 @@ namespace Redatech.Service.RedacaoService
             {
                 List<Essay> essays = await _context.Essays.ToListAsync();
 
-                serviceResponse.Dados = _mapper.Map<List<RedacaoDto>>(essays);
-                serviceResponse.Mensagem = "Lista de redações obtida com sucesso";
-                serviceResponse.Sucesso = true;
+                serviceResponse.Data = _mapper.Map<List<RedacaoDto>>(essays);
+                serviceResponse.Message = "Lista de redações obtida com sucesso";
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
-                serviceResponse.Mensagem = ex.Message;
-                serviceResponse.Sucesso = false;
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
             }
 
             return serviceResponse;

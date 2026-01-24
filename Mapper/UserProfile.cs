@@ -2,9 +2,9 @@
 using Redatech.Dto;
 using Redatech.Models;
 
-public class UsuarioProfile : Profile
+public class UserProfile : Profile
 {
-    public UsuarioProfile()
+    public UserProfile()
     {
         CreateMap<User, UsuarioDto>().ReverseMap();
         CreateMap<Essay, RedacaoDto>().ReverseMap();
@@ -14,7 +14,7 @@ public class UsuarioProfile : Profile
         // Novo mapeamento: TurmaModel -> TurmaComAlunosDto
         CreateMap<Class, TurmaComAlunosDto>()
             .ForMember(dest => dest.Alunos, opt => opt.MapFrom(src =>
-                src.TurmasAlunos.Select(ta => ta.Aluno)));
+                src.ClassStudents.Select(ta => ta.Student)));
 
         // Novo mapeamento: UsuarioModel -> AlunoNaTurmaDto
         CreateMap<User, AlunoNaTurmaDto>()

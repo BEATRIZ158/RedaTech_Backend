@@ -78,15 +78,15 @@ namespace Redatech.Controllers
         {
             var uploadResponse = await _redacaoInterface.UploadFileEssay(arquivo);
 
-            if (!uploadResponse.Sucesso)
-                return BadRequest(uploadResponse.Mensagem);
+            if (!uploadResponse.Success)
+                return BadRequest(uploadResponse.Message);
 
-            redacaoDto.CaminhoArquivo = uploadResponse.Dados;
+            redacaoDto.CaminhoArquivo = uploadResponse.Data;
 
             var createResponse = await _redacaoInterface.CreateEssay(redacaoDto);
 
-            if (!createResponse.Sucesso)
-                return BadRequest(createResponse.Mensagem);
+            if (!createResponse.Success)
+                return BadRequest(createResponse.Message);
 
             return Ok(createResponse);
         }

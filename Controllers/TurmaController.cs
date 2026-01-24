@@ -140,8 +140,8 @@ namespace Redatech.Controllers
         {
             var resposta = await _turmaInterface.GetClassesByName(nomeTurmaParcial);
 
-            if (!resposta.Sucesso)
-                return BadRequest(resposta.Mensagem);
+            if (!resposta.Success)
+                return BadRequest(resposta.Message);
 
             return Ok(resposta);
         }

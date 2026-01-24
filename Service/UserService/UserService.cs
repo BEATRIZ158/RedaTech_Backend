@@ -33,9 +33,9 @@ namespace Redatech.Service.UsuarioService
             {
                 if (novoUsuarioDto == null)
                 {
-                    serviceResponse.Dados = null;
-                    serviceResponse.Mensagem = "Informar dados!";
-                    serviceResponse.Sucesso = false;
+                    serviceResponse.Data = null;
+                    serviceResponse.Message = "Informar dados!";
+                    serviceResponse.Success = false;
                     return serviceResponse;
                 }
 
@@ -51,15 +51,15 @@ namespace Redatech.Service.UsuarioService
 
                 // Recupera todos os usuários já convertidos para DTO
                 List<User> usuarios = _context.Users.ToList();
-                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(usuarios);
+                serviceResponse.Data = _mapper.Map<List<UsuarioDto>>(usuarios);
 
-                serviceResponse.Mensagem = "Usuário criado com sucesso!";
-                serviceResponse.Sucesso = true;
+                serviceResponse.Message = "Usuário criado com sucesso!";
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
-                serviceResponse.Sucesso = false;
-                serviceResponse.Mensagem = $"Erro: {ex.Message}";
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Erro: {ex.Message}";
             }
 
             return serviceResponse;
@@ -75,9 +75,9 @@ namespace Redatech.Service.UsuarioService
 
                 if (user == null)
                 {
-                    serviceResponse.Dados = null;
-                    serviceResponse.Mensagem = "Usuário não localizado";
-                    serviceResponse.Sucesso = false;
+                    serviceResponse.Data = null;
+                    serviceResponse.Message = "Usuário não localizado";
+                    serviceResponse.Success = false;
 
                     return serviceResponse;
                 }
@@ -86,13 +86,13 @@ namespace Redatech.Service.UsuarioService
                 await _context.SaveChangesAsync();
 
                 List<User> usuarios = await _context.Users.ToListAsync();
-                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(usuarios);
+                serviceResponse.Data = _mapper.Map<List<UsuarioDto>>(usuarios);
 
             }
             catch (Exception ex)
             {
-                serviceResponse.Sucesso = false;
-                serviceResponse.Mensagem = $"Erro: {ex.Message}";
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Erro: {ex.Message}";
             }
 
             return serviceResponse;
@@ -110,24 +110,24 @@ namespace Redatech.Service.UsuarioService
                 // Caso não encontre o usuário, atribui a mensagem de erro
                 if (user == null)
                 {
-                    serviceResponse.Dados = null;
-                    serviceResponse.Mensagem = "Usuário não localizado";
-                    serviceResponse.Sucesso = false;
+                    serviceResponse.Data = null;
+                    serviceResponse.Message = "Usuário não localizado";
+                    serviceResponse.Success = false;
                     return serviceResponse; // Retorna a resposta com erro imediatamente
                 }
 
                 // Se o usuário for encontrado, mapeia para o DTO
-                serviceResponse.Dados = _mapper.Map<UsuarioDto>(user);
+                serviceResponse.Data = _mapper.Map<UsuarioDto>(user);
 
                 // Sucesso
-                serviceResponse.Mensagem = "Usuário encontrado com sucesso";
-                serviceResponse.Sucesso = true;
+                serviceResponse.Message = "Usuário encontrado com sucesso";
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
                 // Em caso de erro no processo
-                serviceResponse.Sucesso = false;
-                serviceResponse.Mensagem = $"Erro: {ex.Message}";
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Erro: {ex.Message}";
             }
 
             return serviceResponse;
@@ -143,17 +143,17 @@ namespace Redatech.Service.UsuarioService
                 List<User> users = await _context.Users.ToListAsync();
 
                 // Converte a lista de UsuarioModel para UsuarioDto usando AutoMapper
-                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(users);
+                serviceResponse.Data = _mapper.Map<List<UsuarioDto>>(users);
 
                 // Define a mensagem de sucesso
-                serviceResponse.Mensagem = "Lista de usuários obtida com sucesso";
-                serviceResponse.Sucesso = true;
+                serviceResponse.Message = "Lista de usuários obtida com sucesso";
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
                 // Em caso de erro, retorna a mensagem de exceção
-                serviceResponse.Sucesso = false;
-                serviceResponse.Mensagem = $"Erro: {ex.Message}";
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Erro: {ex.Message}";
             }
 
             return serviceResponse;
@@ -170,9 +170,9 @@ namespace Redatech.Service.UsuarioService
 
                 if (user == null)
                 {
-                    serviceResponse.Dados = null;
-                    serviceResponse.Mensagem = "Usuário não localizado";
-                    serviceResponse.Sucesso = false;
+                    serviceResponse.Data = null;
+                    serviceResponse.Message = "Usuário não localizado";
+                    serviceResponse.Success = false;
 
                     return serviceResponse; // Retorna a resposta com erro imediatamente
                 }
@@ -187,12 +187,12 @@ namespace Redatech.Service.UsuarioService
                 await _context.SaveChangesAsync();
 
                 List<User> users = await _context.Users.ToListAsync();
-                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(users);
+                serviceResponse.Data = _mapper.Map<List<UsuarioDto>>(users);
             }
             catch (Exception ex)
             {
-                serviceResponse.Sucesso = false;
-                serviceResponse.Mensagem = $"Erro: {ex.Message}";
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Erro: {ex.Message}";
             }
 
             return serviceResponse;
@@ -211,9 +211,9 @@ namespace Redatech.Service.UsuarioService
 
                 if (userFound == null)
                 {
-                    serviceResponse.Dados = null;
-                    serviceResponse.Mensagem = "Usuário não localizado";
-                    serviceResponse.Sucesso = false;
+                    serviceResponse.Data = null;
+                    serviceResponse.Message = "Usuário não localizado";
+                    serviceResponse.Success = false;
                     return serviceResponse;
                 }
 
@@ -230,13 +230,13 @@ namespace Redatech.Service.UsuarioService
 
                 // Retorna a lista atualizada de usuários
                 List<User> usuarios = await _context.Users.ToListAsync();
-                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(usuarios);
-                serviceResponse.Sucesso = true;
+                serviceResponse.Data = _mapper.Map<List<UsuarioDto>>(usuarios);
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
-                serviceResponse.Sucesso = false;
-                serviceResponse.Mensagem = $"Erro: {ex.Message}";
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Erro: {ex.Message}";
             }
 
             return serviceResponse;
@@ -250,8 +250,8 @@ namespace Redatech.Service.UsuarioService
             {
                 if (string.IsNullOrEmpty(nomeParcial))
                 {
-                    serviceResponse.Sucesso = false;
-                    serviceResponse.Mensagem = "Informe um nome para buscar.";
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Informe um nome para buscar.";
                     return serviceResponse;
                 }
 
@@ -262,14 +262,14 @@ namespace Redatech.Service.UsuarioService
                     .Where(user => user.Name.StartsWith(nomeParcial))
                     .ToListAsync();
 
-                serviceResponse.Dados = _mapper.Map<List<UsuarioDto>>(users);
-                serviceResponse.Sucesso = true;
-                serviceResponse.Mensagem = "Usuários encontrados com sucesso!";
+                serviceResponse.Data = _mapper.Map<List<UsuarioDto>>(users);
+                serviceResponse.Success = true;
+                serviceResponse.Message = "Usuários encontrados com sucesso!";
             }
             catch (Exception ex)
             {
-                serviceResponse.Sucesso = false;
-                serviceResponse.Mensagem = $"Erro: {ex.Message}";
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Erro: {ex.Message}";
             }
 
             return serviceResponse;
@@ -284,8 +284,8 @@ namespace Redatech.Service.UsuarioService
 
             if (usuario == null || !CriptografiaHash.VerificarSenha(loginDto.Senha, usuario.PasswordHash))
             {
-                response.Sucesso = false;
-                response.Mensagem = "Usuário ou senha inválidos!";
+                response.Success = false;
+                response.Message = "Usuário ou senha inválidos!";
                 return response;
             }
 
@@ -296,9 +296,9 @@ namespace Redatech.Service.UsuarioService
                 Email = usuario.Email
             };
 
-            response.Sucesso = true;
-            response.Mensagem = "Login realizado com sucesso!";
-            response.Dados = usuarioLogado;
+            response.Success = true;
+            response.Message = "Login realizado com sucesso!";
+            response.Data = usuarioLogado;
 
             return response;
         }

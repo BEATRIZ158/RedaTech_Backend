@@ -101,8 +101,8 @@ namespace Redatech.Controllers
         {
             var resposta = await _usuarioInterface.GetUserByName(nomeParcial);
 
-            if (!resposta.Sucesso)
-                return BadRequest(resposta.Mensagem);
+            if (!resposta.Success)
+                return BadRequest(resposta.Message);
 
             return Ok(resposta);
         }
@@ -116,7 +116,7 @@ namespace Redatech.Controllers
         public async Task<ActionResult<ServiceResponse<UsuarioLogadoDto>>> Login([FromBody] LoginDto loginDto)
         {
             var resposta = await _usuarioInterface.Login(loginDto);
-            if (!resposta.Sucesso)
+            if (!resposta.Success)
                 return BadRequest(resposta);
 
             return Ok(resposta);
